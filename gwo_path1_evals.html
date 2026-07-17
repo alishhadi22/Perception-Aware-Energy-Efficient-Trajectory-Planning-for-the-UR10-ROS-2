@@ -1,0 +1,244 @@
+<title>GWO Path 1 — Per-Evaluation Summary</title>
+<style>
+  :root {
+    --bg: #F4F8FA;
+    --bg-elevated: #FFFFFF;
+    --bg-inset: #EBF1F4;
+    --ink: #0D2137;
+    --muted: #4B6478;
+    --faint: #8399A9;
+    --accent: #065A82;
+    --accent-strong: #1C7293;
+    --accent-wash: rgba(28, 114, 147, 0.08);
+    --best: #B8650A;
+    --best-wash: rgba(184, 101, 10, 0.10);
+    --border: rgba(13, 33, 55, 0.12);
+    --border-soft: rgba(13, 33, 55, 0.07);
+    --shadow: 0 1px 2px rgba(13, 33, 55, 0.06), 0 8px 24px rgba(13, 33, 55, 0.05);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0B1B2B;
+      --bg-elevated: #10263D;
+      --bg-inset: #0D2137;
+      --ink: #EAF1F5;
+      --muted: #93AEC0;
+      --faint: #5B7688;
+      --accent: #4FB3D9;
+      --accent-strong: #6FC6E8;
+      --accent-wash: rgba(79, 179, 217, 0.10);
+      --best: #E5A24D;
+      --best-wash: rgba(229, 162, 77, 0.12);
+      --border: rgba(234, 241, 245, 0.12);
+      --border-soft: rgba(234, 241, 245, 0.07);
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0B1B2B; --bg-elevated: #10263D; --bg-inset: #0D2137; --ink: #EAF1F5;
+    --muted: #93AEC0; --faint: #5B7688; --accent: #4FB3D9; --accent-strong: #6FC6E8;
+    --accent-wash: rgba(79, 179, 217, 0.10); --best: #E5A24D; --best-wash: rgba(229, 162, 77, 0.12);
+    --border: rgba(234, 241, 245, 0.12); --border-soft: rgba(234, 241, 245, 0.07);
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
+  }
+  :root[data-theme="light"] {
+    --bg: #F4F8FA; --bg-elevated: #FFFFFF; --bg-inset: #EBF1F4; --ink: #0D2137;
+    --muted: #4B6478; --faint: #8399A9; --accent: #065A82; --accent-strong: #1C7293;
+    --accent-wash: rgba(28, 114, 147, 0.08); --best: #B8650A; --best-wash: rgba(184, 101, 10, 0.10);
+    --border: rgba(13, 33, 55, 0.12); --border-soft: rgba(13, 33, 55, 0.07);
+    --shadow: 0 1px 2px rgba(13, 33, 55, 0.06), 0 8px 24px rgba(13, 33, 55, 0.05);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: -apple-system, "Segoe UI", "Inter", ui-sans-serif, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  body { max-width: 1000px; margin: 0 auto; padding: 2.5rem 1.5rem 5rem; }
+  .mono { font-family: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; }
+
+  header.page { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+  .eyebrow { text-transform: uppercase; letter-spacing: 0.09em; font-size: 0.72rem; font-weight: 600; color: var(--accent); }
+  h1 { font-size: clamp(1.5rem, 2.6vw, 2.05rem); font-weight: 650; letter-spacing: -0.01em; margin: 0.1rem 0 0; text-wrap: balance; }
+  .subtitle { color: var(--muted); font-size: 0.94rem; max-width: 66ch; line-height: 1.55; margin: 0.3rem 0 0; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 0.4rem 1.2rem; margin-top: 0.9rem; font-size: 0.78rem; color: var(--faint); }
+  .meta-row span b { color: var(--muted); font-weight: 600; }
+
+  .note {
+    background: var(--accent-wash);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 0.83rem;
+    color: var(--muted);
+    line-height: 1.55;
+    margin-bottom: 1.75rem;
+  }
+  .note b { color: var(--ink); }
+
+  .runs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.9rem; margin-bottom: 1.75rem; }
+  @media (max-width: 700px) { .runs { grid-template-columns: 1fr; } }
+  .run-card {
+    text-align: left; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 10px;
+    padding: 1rem 1.15rem; cursor: pointer; box-shadow: var(--shadow); transition: border-color 120ms ease, transform 120ms ease;
+    font-family: inherit; color: inherit; position: relative; overflow: hidden;
+  }
+  .run-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--accent); opacity: 0; transition: opacity 120ms ease; }
+  .run-card:hover { transform: translateY(-1px); }
+  .run-card.active { border-color: var(--accent); }
+  .run-card.active::before { opacity: 1; }
+  .run-card .label { display: flex; align-items: baseline; justify-content: space-between; font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+  .run-card .pill { font-size: 0.68rem; padding: 0.12rem 0.5rem; border-radius: 999px; background: var(--best-wash); color: var(--best); font-weight: 700; letter-spacing: 0.02em; }
+  .run-card .stat-row { display: flex; align-items: baseline; gap: 0.5rem; margin-top: 0.55rem; }
+  .run-card .stat-row .val { font-size: 1.5rem; font-weight: 650; letter-spacing: -0.01em; }
+  .run-card .stat-row .improve { font-size: 0.85rem; font-weight: 600; color: var(--accent-strong); }
+  .run-card .sub-stats { display: flex; gap: 1rem; margin-top: 0.5rem; font-size: 0.78rem; color: var(--faint); }
+  .run-card .sub-stats b { color: var(--muted); font-weight: 600; }
+
+  .toolbar { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.9rem; flex-wrap: wrap; }
+  .toolbar input[type="search"] {
+    flex: 1 1 220px; max-width: 280px; background: var(--bg-elevated); border: 1px solid var(--border);
+    border-radius: 8px; padding: 0.5rem 0.7rem; color: var(--ink); font-size: 0.85rem; font-family: inherit;
+  }
+  .toolbar input[type="search"]:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .toolbar .count { font-size: 0.76rem; color: var(--muted); margin-left: auto; }
+
+  .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; background: var(--bg-elevated); box-shadow: var(--shadow); }
+  table { border-collapse: collapse; width: 100%; font-size: 0.85rem; min-width: 560px; }
+  thead th {
+    position: sticky; top: 0; background: var(--bg-inset); color: var(--muted); text-transform: uppercase;
+    font-size: 0.68rem; letter-spacing: 0.05em; font-weight: 700; text-align: right; padding: 0.55rem 0.9rem;
+    border-bottom: 1px solid var(--border); white-space: nowrap;
+  }
+  thead th:first-child { text-align: left; }
+  tbody td { padding: 0.45rem 0.9rem; text-align: right; border-bottom: 1px solid var(--border-soft); white-space: nowrap; }
+  tbody td.eval-cell { text-align: left; font-weight: 700; color: var(--ink); }
+  tbody tr.eval-even { background: var(--bg-inset); }
+  tbody tr.is-best { background: var(--best-wash); }
+  tbody tr.is-best td.eval-cell { color: var(--best); }
+  tbody tr.is-best td.eval-cell .best-tag { display: inline-block; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--best); font-weight: 700; margin-left: 0.4rem; }
+  tbody tr.hidden-row { display: none; }
+
+  .view { display: none; }
+  .view.active { display: block; animation: fade 160ms ease; }
+  @media (prefers-reduced-motion: reduce) { .view.active { animation: none; } }
+  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+
+  footer.page { margin-top: 2.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border); font-size: 0.78rem; color: var(--faint); line-height: 1.7; }
+  footer.page code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; background: var(--bg-inset); padding: 0.08rem 0.35rem; border-radius: 4px; font-size: 0.87em; }
+</style>
+
+<header class="page">
+  <span class="eyebrow">UR10 Trajectory Optimization &middot; Path 1 (I &rarr; _)</span>
+  <h1>GWO &mdash; Per-Evaluation Summary</h1>
+  <p class="subtitle">All 60 evaluations across 3 independent Grey Wolf Optimizer runs (100&nbsp;Hz physics, 30 variables &mdash; 5 params &times; 6 joints, 6 wolves).</p>
+  <div class="meta-row">
+    <span><b>Baseline J</b> 0.770740</span>
+    <span><b>Baseline duration</b> 8.090s</span>
+    <span><b>Max evals/run</b> 60</span>
+    <span><b>Wolves</b> 6</span>
+  </div>
+</header>
+
+<div class="note">
+  <b>Aggregate parameters shown.</b> This implementation records swarm-level average velocity and compression ratio for each evaluation rather than individual per-joint values. The table below reports every metric captured during the optimization runs.
+</div>
+
+<div class="runs" id="runSwitcher"></div>
+
+<div class="toolbar">
+  <input type="search" id="filterInput" placeholder="Filter by eval #&hellip;" aria-label="Filter evaluations">
+  <span class="count" id="rowCount"></span>
+</div>
+
+<div id="views"></div>
+
+<footer class="page">
+  Data compiled from three independent Grey Wolf Optimizer runs (60 evaluations each).<br>
+  Parameter bounds (per joint, not logged individually): vel &isin; [0.1, 1.0] &middot; accel &isin; [0.1, 1.0] &middot; compress &isin; [0.5, 1.0] &middot; offset &isin; [&minus;0.3, +0.3] rad &middot; weight &isin; [0.05, 1.0]
+</footer>
+
+<script id="data-json" type="application/json">{"run1": [{"eval": 1, "avg_vel": 0.79, "avg_compress": 0.729, "J": 0.715856, "dur": 5.9, "samples": 600}, {"eval": 2, "avg_vel": 0.603, "avg_compress": 0.635, "J": 0.687067, "dur": 5.15, "samples": 525}, {"eval": 3, "avg_vel": 0.616, "avg_compress": 0.714, "J": 0.712124, "dur": 5.8, "samples": 590}, {"eval": 4, "avg_vel": 0.564, "avg_compress": 0.785, "J": 0.734734, "dur": 6.4, "samples": 650}, {"eval": 5, "avg_vel": 0.432, "avg_compress": 0.786, "J": 0.734816, "dur": 6.4, "samples": 650}, {"eval": 6, "avg_vel": 0.813, "avg_compress": 0.705, "J": 0.708514, "dur": 5.7, "samples": 580}, {"eval": 7, "avg_vel": 0.622, "avg_compress": 0.693, "J": 0.706692, "dur": 5.65, "samples": 575}, {"eval": 8, "avg_vel": 0.742, "avg_compress": 0.66, "J": 0.695336, "dur": 5.35, "samples": 545}, {"eval": 9, "avg_vel": 0.679, "avg_compress": 0.707, "J": 0.710812, "dur": 5.75, "samples": 585}, {"eval": 10, "avg_vel": 0.652, "avg_compress": 0.73, "J": 0.717896, "dur": 5.95, "samples": 605}, {"eval": 11, "avg_vel": 0.361, "avg_compress": 0.765, "J": 0.727323, "dur": 6.2, "samples": 630}, {"eval": 12, "avg_vel": 0.63, "avg_compress": 0.728, "J": 0.716207, "dur": 5.9, "samples": 600}, {"eval": 13, "avg_vel": 0.604, "avg_compress": 0.671, "J": 0.699075, "dur": 5.45, "samples": 555}, {"eval": 14, "avg_vel": 0.607, "avg_compress": 0.668, "J": 0.697303, "dur": 5.4, "samples": 550}, {"eval": 15, "avg_vel": 0.779, "avg_compress": 0.627, "J": 0.68617, "dur": 5.1, "samples": 520}, {"eval": 16, "avg_vel": 0.692, "avg_compress": 0.634, "J": 0.687465, "dur": 5.15, "samples": 525}, {"eval": 17, "avg_vel": 0.452, "avg_compress": 0.715, "J": 0.715613, "dur": 5.8, "samples": 590}, {"eval": 18, "avg_vel": 0.633, "avg_compress": 0.846, "J": 0.751746, "dur": 6.85, "samples": 695}, {"eval": 19, "avg_vel": 0.568, "avg_compress": 0.698, "J": 0.706464, "dur": 5.65, "samples": 575}, {"eval": 20, "avg_vel": 0.656, "avg_compress": 0.639, "J": 0.689509, "dur": 5.2, "samples": 530}, {"eval": 21, "avg_vel": 0.728, "avg_compress": 0.657, "J": 0.695239, "dur": 5.35, "samples": 544}, {"eval": 22, "avg_vel": 0.772, "avg_compress": 0.627, "J": 0.68824, "dur": 5.1, "samples": 520}, {"eval": 23, "avg_vel": 0.566, "avg_compress": 0.625, "J": 0.685772, "dur": 5.1, "samples": 520}, {"eval": 24, "avg_vel": 0.602, "avg_compress": 0.603, "J": 0.678709, "dur": 4.9, "samples": 500}, {"eval": 25, "avg_vel": 0.695, "avg_compress": 0.635, "J": 0.687498, "dur": 5.15, "samples": 525}, {"eval": 26, "avg_vel": 0.561, "avg_compress": 0.63, "J": 0.685599, "dur": 5.1, "samples": 520}, {"eval": 27, "avg_vel": 0.714, "avg_compress": 0.673, "J": 0.702405, "dur": 5.45, "samples": 555}, {"eval": 28, "avg_vel": 0.601, "avg_compress": 0.58, "J": 0.670566, "dur": 4.7, "samples": 480}, {"eval": 29, "avg_vel": 0.633, "avg_compress": 0.669, "J": 0.698853, "dur": 5.45, "samples": 555}, {"eval": 30, "avg_vel": 0.661, "avg_compress": 0.668, "J": 0.697691, "dur": 5.4, "samples": 550}, {"eval": 31, "avg_vel": 0.584, "avg_compress": 0.603, "J": 0.678072, "dur": 4.9, "samples": 500}, {"eval": 32, "avg_vel": 0.59, "avg_compress": 0.643, "J": 0.689896, "dur": 5.2, "samples": 530}, {"eval": 33, "avg_vel": 0.541, "avg_compress": 0.636, "J": 0.687711, "dur": 5.15, "samples": 525}, {"eval": 34, "avg_vel": 0.569, "avg_compress": 0.662, "J": 0.697048, "dur": 5.4, "samples": 550}, {"eval": 35, "avg_vel": 0.547, "avg_compress": 0.652, "J": 0.693536, "dur": 5.3, "samples": 540}, {"eval": 36, "avg_vel": 0.542, "avg_compress": 0.542, "J": 0.659209, "dur": 4.4, "samples": 450}, {"eval": 37, "avg_vel": 0.615, "avg_compress": 0.571, "J": 0.668687, "dur": 4.65, "samples": 475}, {"eval": 38, "avg_vel": 0.529, "avg_compress": 0.607, "J": 0.679876, "dur": 4.95, "samples": 505}, {"eval": 39, "avg_vel": 0.609, "avg_compress": 0.598, "J": 0.676182, "dur": 4.85, "samples": 495}, {"eval": 40, "avg_vel": 0.601, "avg_compress": 0.586, "J": 0.672379, "dur": 4.75, "samples": 485}, {"eval": 41, "avg_vel": 0.49, "avg_compress": 0.572, "J": 0.668623, "dur": 4.65, "samples": 475}, {"eval": 42, "avg_vel": 0.563, "avg_compress": 0.541, "J": 0.65923, "dur": 4.4, "samples": 450}, {"eval": 43, "avg_vel": 0.496, "avg_compress": 0.533, "J": 0.657734, "dur": 4.35, "samples": 445}, {"eval": 44, "avg_vel": 0.515, "avg_compress": 0.547, "J": 0.661067, "dur": 4.45, "samples": 455}, {"eval": 45, "avg_vel": 0.507, "avg_compress": 0.588, "J": 0.674315, "dur": 4.8, "samples": 490}, {"eval": 46, "avg_vel": 0.504, "avg_compress": 0.538, "J": 0.659216, "dur": 4.4, "samples": 450}, {"eval": 47, "avg_vel": 0.517, "avg_compress": 0.585, "J": 0.67243, "dur": 4.75, "samples": 485}, {"eval": 48, "avg_vel": 0.567, "avg_compress": 0.557, "J": 0.664857, "dur": 4.55, "samples": 465}, {"eval": 49, "avg_vel": 0.514, "avg_compress": 0.543, "J": 0.659185, "dur": 4.4, "samples": 450}, {"eval": 50, "avg_vel": 0.505, "avg_compress": 0.555, "J": 0.663004, "dur": 4.5, "samples": 460}, {"eval": 51, "avg_vel": 0.521, "avg_compress": 0.549, "J": 0.660992, "dur": 4.45, "samples": 455}, {"eval": 52, "avg_vel": 0.491, "avg_compress": 0.548, "J": 0.661118, "dur": 4.45, "samples": 455}, {"eval": 53, "avg_vel": 0.499, "avg_compress": 0.529, "J": 0.655509, "dur": 4.3, "samples": 440}, {"eval": 54, "avg_vel": 0.535, "avg_compress": 0.538, "J": 0.659199, "dur": 4.4, "samples": 450}, {"eval": 55, "avg_vel": 0.488, "avg_compress": 0.541, "J": 0.659488, "dur": 4.4, "samples": 450}, {"eval": 56, "avg_vel": 0.501, "avg_compress": 0.54, "J": 0.659157, "dur": 4.4, "samples": 450}, {"eval": 57, "avg_vel": 0.496, "avg_compress": 0.545, "J": 0.661036, "dur": 4.45, "samples": 455}, {"eval": 58, "avg_vel": 0.5, "avg_compress": 0.539, "J": 0.65919, "dur": 4.4, "samples": 450}, {"eval": 59, "avg_vel": 0.515, "avg_compress": 0.551, "J": 0.662963, "dur": 4.5, "samples": 460}, {"eval": 60, "avg_vel": 0.502, "avg_compress": 0.535, "J": 0.657291, "dur": 4.35, "samples": 445}], "run2": [{"eval": 1, "avg_vel": 0.515, "avg_compress": 0.8, "J": 0.738714, "dur": 6.5, "samples": 660}, {"eval": 2, "avg_vel": 0.706, "avg_compress": 0.899, "J": 0.76935, "dur": 7.3, "samples": 740}, {"eval": 3, "avg_vel": 0.395, "avg_compress": 0.77, "J": 0.729132, "dur": 6.25, "samples": 635}, {"eval": 4, "avg_vel": 0.487, "avg_compress": 0.738, "J": 0.719595, "dur": 6.0, "samples": 610}, {"eval": 5, "avg_vel": 0.404, "avg_compress": 0.761, "J": 0.72757, "dur": 6.2, "samples": 630}, {"eval": 6, "avg_vel": 0.708, "avg_compress": 0.847, "J": 0.75714, "dur": 6.9, "samples": 700}, {"eval": 7, "avg_vel": 0.489, "avg_compress": 0.711, "J": 0.709717, "dur": 5.75, "samples": 584}, {"eval": 8, "avg_vel": 0.531, "avg_compress": 0.696, "J": 0.70634, "dur": 5.65, "samples": 575}, {"eval": 9, "avg_vel": 0.526, "avg_compress": 0.66, "J": 0.695054, "dur": 5.35, "samples": 545}, {"eval": 10, "avg_vel": 0.413, "avg_compress": 0.778, "J": 0.730912, "dur": 6.3, "samples": 640}, {"eval": 11, "avg_vel": 0.305, "avg_compress": 0.809, "J": 0.740315, "dur": 6.55, "samples": 665}, {"eval": 12, "avg_vel": 0.252, "avg_compress": 0.749, "J": 0.709627, "dur": 6.1, "samples": 620}, {"eval": 13, "avg_vel": 0.509, "avg_compress": 0.647, "J": 0.691217, "dur": 5.25, "samples": 535}, {"eval": 14, "avg_vel": 0.31, "avg_compress": 0.799, "J": 0.738441, "dur": 6.5, "samples": 660}, {"eval": 15, "avg_vel": 0.453, "avg_compress": 0.65, "J": 0.693124, "dur": 5.3, "samples": 540}, {"eval": 16, "avg_vel": 0.488, "avg_compress": 0.806, "J": 0.740372, "dur": 6.55, "samples": 665}, {"eval": 17, "avg_vel": 0.377, "avg_compress": 0.678, "J": 0.700668, "dur": 5.5, "samples": 560}, {"eval": 18, "avg_vel": 0.444, "avg_compress": 0.709, "J": 0.710193, "dur": 5.75, "samples": 585}, {"eval": 19, "avg_vel": 0.51, "avg_compress": 0.753, "J": 0.723445, "dur": 6.1, "samples": 620}, {"eval": 20, "avg_vel": 0.281, "avg_compress": 0.671, "J": 0.698774, "dur": 5.45, "samples": 555}, {"eval": 21, "avg_vel": 0.563, "avg_compress": 0.671, "J": 0.698824, "dur": 5.45, "samples": 555}, {"eval": 22, "avg_vel": 0.521, "avg_compress": 0.709, "J": 0.710514, "dur": 5.75, "samples": 585}, {"eval": 23, "avg_vel": 0.496, "avg_compress": 0.631, "J": 0.687483, "dur": 5.15, "samples": 525}, {"eval": 24, "avg_vel": 0.404, "avg_compress": 0.694, "J": 0.706355, "dur": 5.65, "samples": 575}, {"eval": 25, "avg_vel": 0.477, "avg_compress": 0.717, "J": 0.713915, "dur": 5.85, "samples": 595}, {"eval": 26, "avg_vel": 0.476, "avg_compress": 0.665, "J": 0.696983, "dur": 5.4, "samples": 550}, {"eval": 27, "avg_vel": 0.51, "avg_compress": 0.562, "J": 0.664439, "dur": 4.55, "samples": 464}, {"eval": 28, "avg_vel": 0.455, "avg_compress": 0.606, "J": 0.679929, "dur": 4.95, "samples": 505}, {"eval": 29, "avg_vel": 0.536, "avg_compress": 0.729, "J": 0.71588, "dur": 5.9, "samples": 600}, {"eval": 30, "avg_vel": 0.477, "avg_compress": 0.65, "J": 0.693102, "dur": 5.3, "samples": 540}, {"eval": 31, "avg_vel": 0.484, "avg_compress": 0.609, "J": 0.679924, "dur": 4.95, "samples": 505}, {"eval": 32, "avg_vel": 0.508, "avg_compress": 0.587, "J": 0.672397, "dur": 4.75, "samples": 485}, {"eval": 33, "avg_vel": 0.432, "avg_compress": 0.613, "J": 0.681866, "dur": 5.0, "samples": 510}, {"eval": 34, "avg_vel": 0.536, "avg_compress": 0.643, "J": 0.689349, "dur": 5.2, "samples": 530}, {"eval": 35, "avg_vel": 0.56, "avg_compress": 0.62, "J": 0.683738, "dur": 5.05, "samples": 515}, {"eval": 36, "avg_vel": 0.448, "avg_compress": 0.655, "J": 0.693152, "dur": 5.3, "samples": 540}, {"eval": 37, "avg_vel": 0.487, "avg_compress": 0.626, "J": 0.68562, "dur": 5.1, "samples": 520}, {"eval": 38, "avg_vel": 0.51, "avg_compress": 0.554, "J": 0.662968, "dur": 4.5, "samples": 460}, {"eval": 39, "avg_vel": 0.521, "avg_compress": 0.647, "J": 0.691243, "dur": 5.25, "samples": 535}, {"eval": 40, "avg_vel": 0.494, "avg_compress": 0.624, "J": 0.685571, "dur": 5.1, "samples": 520}, {"eval": 41, "avg_vel": 0.465, "avg_compress": 0.582, "J": 0.672456, "dur": 4.75, "samples": 485}, {"eval": 42, "avg_vel": 0.511, "avg_compress": 0.604, "J": 0.677997, "dur": 4.9, "samples": 500}, {"eval": 43, "avg_vel": 0.463, "avg_compress": 0.561, "J": 0.66485, "dur": 4.55, "samples": 465}, {"eval": 44, "avg_vel": 0.515, "avg_compress": 0.593, "J": 0.674281, "dur": 4.8, "samples": 490}, {"eval": 45, "avg_vel": 0.522, "avg_compress": 0.611, "J": 0.67997, "dur": 4.95, "samples": 505}, {"eval": 46, "avg_vel": 0.506, "avg_compress": 0.605, "J": 0.678027, "dur": 4.9, "samples": 500}, {"eval": 47, "avg_vel": 0.567, "avg_compress": 0.568, "J": 0.666717, "dur": 4.6, "samples": 470}, {"eval": 48, "avg_vel": 0.512, "avg_compress": 0.599, "J": 0.676172, "dur": 4.85, "samples": 495}, {"eval": 49, "avg_vel": 0.516, "avg_compress": 0.582, "J": 0.672392, "dur": 4.75, "samples": 485}, {"eval": 50, "avg_vel": 0.486, "avg_compress": 0.565, "J": 0.666734, "dur": 4.6, "samples": 470}, {"eval": 51, "avg_vel": 0.478, "avg_compress": 0.568, "J": 0.666683, "dur": 4.6, "samples": 470}, {"eval": 52, "avg_vel": 0.512, "avg_compress": 0.564, "J": 0.666731, "dur": 4.6, "samples": 470}, {"eval": 53, "avg_vel": 0.485, "avg_compress": 0.583, "J": 0.672388, "dur": 4.75, "samples": 485}, {"eval": 54, "avg_vel": 0.466, "avg_compress": 0.553, "J": 0.66299, "dur": 4.5, "samples": 460}, {"eval": 55, "avg_vel": 0.5, "avg_compress": 0.562, "J": 0.664814, "dur": 4.55, "samples": 465}, {"eval": 56, "avg_vel": 0.498, "avg_compress": 0.55, "J": 0.662922, "dur": 4.5, "samples": 460}, {"eval": 57, "avg_vel": 0.496, "avg_compress": 0.557, "J": 0.664517, "dur": 4.55, "samples": 465}, {"eval": 58, "avg_vel": 0.49, "avg_compress": 0.569, "J": 0.668587, "dur": 4.65, "samples": 475}, {"eval": 59, "avg_vel": 0.508, "avg_compress": 0.565, "J": 0.666728, "dur": 4.6, "samples": 470}, {"eval": 60, "avg_vel": 0.494, "avg_compress": 0.564, "J": 0.666751, "dur": 4.6, "samples": 470}], "run3": [{"eval": 1, "avg_vel": 0.671, "avg_compress": 0.77, "J": 0.729146, "dur": 6.25, "samples": 635}, {"eval": 2, "avg_vel": 0.556, "avg_compress": 0.809, "J": 0.740305, "dur": 6.55, "samples": 665}, {"eval": 3, "avg_vel": 0.557, "avg_compress": 0.674, "J": 0.698877, "dur": 5.45, "samples": 555}, {"eval": 4, "avg_vel": 0.385, "avg_compress": 0.765, "J": 0.72721, "dur": 6.2, "samples": 630}, {"eval": 5, "avg_vel": 0.589, "avg_compress": 0.753, "J": 0.723399, "dur": 6.1, "samples": 620}, {"eval": 6, "avg_vel": 0.368, "avg_compress": 0.741, "J": 0.719554, "dur": 6.0, "samples": 610}, {"eval": 7, "avg_vel": 0.349, "avg_compress": 0.781, "J": 0.732814, "dur": 6.35, "samples": 645}, {"eval": 8, "avg_vel": 0.518, "avg_compress": 0.666, "J": 0.696911, "dur": 5.4, "samples": 550}, {"eval": 9, "avg_vel": 0.561, "avg_compress": 0.782, "J": 0.736916, "dur": 6.35, "samples": 645}, {"eval": 10, "avg_vel": 0.431, "avg_compress": 0.848, "J": 0.753572, "dur": 6.9, "samples": 700}, {"eval": 11, "avg_vel": 0.47, "avg_compress": 0.774, "J": 0.730903, "dur": 6.3, "samples": 640}, {"eval": 12, "avg_vel": 0.329, "avg_compress": 0.641, "J": 0.689354, "dur": 5.2, "samples": 530}, {"eval": 13, "avg_vel": 0.439, "avg_compress": 0.617, "J": 0.681845, "dur": 5.0, "samples": 510}, {"eval": 14, "avg_vel": 0.392, "avg_compress": 0.637, "J": 0.689325, "dur": 5.2, "samples": 530}, {"eval": 15, "avg_vel": 0.527, "avg_compress": 0.653, "J": 0.693163, "dur": 5.3, "samples": 540}, {"eval": 16, "avg_vel": 0.385, "avg_compress": 0.579, "J": 0.670588, "dur": 4.7, "samples": 480}, {"eval": 17, "avg_vel": 0.567, "avg_compress": 0.708, "J": 0.710121, "dur": 5.75, "samples": 585}, {"eval": 18, "avg_vel": 0.56, "avg_compress": 0.696, "J": 0.706503, "dur": 5.65, "samples": 575}, {"eval": 19, "avg_vel": 0.451, "avg_compress": 0.624, "J": 0.683679, "dur": 5.05, "samples": 515}, {"eval": 20, "avg_vel": 0.417, "avg_compress": 0.65, "J": 0.693153, "dur": 5.3, "samples": 540}, {"eval": 21, "avg_vel": 0.446, "avg_compress": 0.702, "J": 0.708249, "dur": 5.7, "samples": 580}, {"eval": 22, "avg_vel": 0.366, "avg_compress": 0.611, "J": 0.679908, "dur": 4.95, "samples": 505}, {"eval": 23, "avg_vel": 0.372, "avg_compress": 0.663, "J": 0.696991, "dur": 5.4, "samples": 550}, {"eval": 24, "avg_vel": 0.36, "avg_compress": 0.622, "J": 0.683692, "dur": 5.05, "samples": 515}, {"eval": 25, "avg_vel": 0.44, "avg_compress": 0.6, "J": 0.678125, "dur": 4.9, "samples": 500}, {"eval": 26, "avg_vel": 0.369, "avg_compress": 0.643, "J": 0.69125, "dur": 5.25, "samples": 535}, {"eval": 27, "avg_vel": 0.453, "avg_compress": 0.659, "J": 0.695037, "dur": 5.35, "samples": 545}, {"eval": 28, "avg_vel": 0.4, "avg_compress": 0.598, "J": 0.676132, "dur": 4.85, "samples": 495}, {"eval": 29, "avg_vel": 0.421, "avg_compress": 0.628, "J": 0.685584, "dur": 5.1, "samples": 520}, {"eval": 30, "avg_vel": 0.368, "avg_compress": 0.688, "J": 0.704434, "dur": 5.6, "samples": 570}, {"eval": 31, "avg_vel": 0.379, "avg_compress": 0.575, "J": 0.668635, "dur": 4.65, "samples": 475}, {"eval": 32, "avg_vel": 0.367, "avg_compress": 0.645, "J": 0.691287, "dur": 5.25, "samples": 535}, {"eval": 33, "avg_vel": 0.415, "avg_compress": 0.646, "J": 0.691297, "dur": 5.25, "samples": 535}, {"eval": 34, "avg_vel": 0.351, "avg_compress": 0.587, "J": 0.672381, "dur": 4.75, "samples": 485}, {"eval": 35, "avg_vel": 0.365, "avg_compress": 0.638, "J": 0.689349, "dur": 5.2, "samples": 530}, {"eval": 36, "avg_vel": 0.394, "avg_compress": 0.583, "J": 0.672373, "dur": 4.75, "samples": 485}, {"eval": 37, "avg_vel": 0.411, "avg_compress": 0.665, "J": 0.696915, "dur": 5.4, "samples": 550}, {"eval": 38, "avg_vel": 0.348, "avg_compress": 0.608, "J": 0.679942, "dur": 4.95, "samples": 505}, {"eval": 39, "avg_vel": 0.373, "avg_compress": 0.624, "J": 0.683691, "dur": 5.05, "samples": 515}, {"eval": 40, "avg_vel": 0.402, "avg_compress": 0.561, "J": 0.664862, "dur": 4.55, "samples": 465}, {"eval": 41, "avg_vel": 0.423, "avg_compress": 0.577, "J": 0.670495, "dur": 4.7, "samples": 480}, {"eval": 42, "avg_vel": 0.381, "avg_compress": 0.616, "J": 0.681809, "dur": 5.0, "samples": 510}, {"eval": 43, "avg_vel": 0.421, "avg_compress": 0.549, "J": 0.661077, "dur": 4.45, "samples": 455}, {"eval": 44, "avg_vel": 0.381, "avg_compress": 0.581, "J": 0.670484, "dur": 4.7, "samples": 480}, {"eval": 45, "avg_vel": 0.409, "avg_compress": 0.611, "J": 0.679949, "dur": 4.95, "samples": 505}, {"eval": 46, "avg_vel": 0.385, "avg_compress": 0.553, "J": 0.663002, "dur": 4.5, "samples": 460}, {"eval": 47, "avg_vel": 0.403, "avg_compress": 0.591, "J": 0.674242, "dur": 4.8, "samples": 490}, {"eval": 48, "avg_vel": 0.448, "avg_compress": 0.592, "J": 0.674314, "dur": 4.8, "samples": 490}, {"eval": 49, "avg_vel": 0.406, "avg_compress": 0.596, "J": 0.676112, "dur": 4.85, "samples": 495}, {"eval": 50, "avg_vel": 0.399, "avg_compress": 0.579, "J": 0.670496, "dur": 4.7, "samples": 480}, {"eval": 51, "avg_vel": 0.394, "avg_compress": 0.558, "J": 0.664846, "dur": 4.55, "samples": 465}, {"eval": 52, "avg_vel": 0.4, "avg_compress": 0.553, "J": 0.662571, "dur": 4.5, "samples": 460}, {"eval": 53, "avg_vel": 0.4, "avg_compress": 0.558, "J": 0.664476, "dur": 4.55, "samples": 465}, {"eval": 54, "avg_vel": 0.408, "avg_compress": 0.564, "J": 0.666733, "dur": 4.6, "samples": 470}, {"eval": 55, "avg_vel": 0.414, "avg_compress": 0.564, "J": 0.666779, "dur": 4.6, "samples": 470}, {"eval": 56, "avg_vel": 0.396, "avg_compress": 0.55, "J": 0.66294, "dur": 4.5, "samples": 460}, {"eval": 57, "avg_vel": 0.395, "avg_compress": 0.561, "J": 0.664796, "dur": 4.55, "samples": 465}, {"eval": 58, "avg_vel": 0.396, "avg_compress": 0.548, "J": 0.661045, "dur": 4.45, "samples": 455}, {"eval": 59, "avg_vel": 0.398, "avg_compress": 0.553, "J": 0.662939, "dur": 4.5, "samples": 460}, {"eval": 60, "avg_vel": 0.396, "avg_compress": 0.561, "J": 0.664825, "dur": 4.55, "samples": 465}]}</script>
+<script>
+  const DATA = JSON.parse(document.getElementById('data-json').textContent);
+  const RUN_KEYS = ['run1', 'run2', 'run3'];
+  const RUN_LABELS = { run1: 'Run 1', run2: 'Run 2', run3: 'Run 3' };
+  const RUN_IMPROVEMENT = { run1: 14.95, run2: 13.99, run3: 14.23 };
+
+  function bestEval(evals) { return evals.reduce((a, b) => (b.J < a.J ? b : a), evals[0]); }
+  function fmt(n, d) { return Number(n).toFixed(d); }
+
+  function buildRunSwitcher() {
+    const el = document.getElementById('runSwitcher');
+    el.innerHTML = RUN_KEYS.map((key, i) => {
+      const evals = DATA[key];
+      const best = bestEval(evals);
+      return `
+        <button class="run-card${i === 0 ? ' active' : ''}" data-run="${key}" role="tab" aria-selected="${i === 0}">
+          <div class="label"><span>${RUN_LABELS[key]}</span><span class="pill">${RUN_IMPROVEMENT[key]}% ↓</span></div>
+          <div class="stat-row"><span class="val mono">${fmt(best.J, 6)}</span><span class="improve">best J</span></div>
+          <div class="sub-stats"><span><b>eval</b> #${best.eval}</span><span><b>dur</b> ${fmt(best.dur, 2)}s</span><span><b>samples</b> ${best.samples}</span></div>
+        </button>`;
+    }).join('');
+    el.querySelectorAll('.run-card').forEach(btn => btn.addEventListener('click', () => switchRun(btn.dataset.run)));
+  }
+
+  function buildTable(key) {
+    const evals = DATA[key];
+    const best = bestEval(evals);
+    let rows = '';
+    evals.forEach((ev, idx) => {
+      const isBest = ev.eval === best.eval;
+      const classes = [];
+      if (idx % 2 === 1) classes.push('eval-even');
+      if (isBest) classes.push('is-best');
+      rows += `<tr class="${classes.join(' ')}" data-eval="${ev.eval}">
+        <td class="eval-cell mono">#${ev.eval}${isBest ? '<span class="best-tag">Best</span>' : ''}</td>
+        <td class="mono">${fmt(ev.avg_vel, 3)}</td>
+        <td class="mono">${fmt(ev.avg_compress, 3)}</td>
+        <td class="mono">${fmt(ev.J, 6)}</td>
+        <td class="mono">${fmt(ev.dur, 2)}s</td>
+        <td class="mono">${ev.samples}</td>
+      </tr>`;
+    });
+    return `<div class="table-wrap"><table>
+      <thead><tr><th>Eval</th><th>Avg Vel</th><th>Avg Compress</th><th>J</th><th>Dur</th><th>Samples</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table></div>`;
+  }
+
+  function buildViews() {
+    const el = document.getElementById('views');
+    el.innerHTML = RUN_KEYS.map((key, i) => `<div class="view${i === 0 ? ' active' : ''}" id="view-${key}">${buildTable(key)}</div>`).join('');
+  }
+
+  let currentRun = 'run1';
+  function switchRun(key) {
+    currentRun = key;
+    document.querySelectorAll('.run-card').forEach(btn => {
+      const active = btn.dataset.run === key;
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-selected', String(active));
+    });
+    document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === `view-${key}`));
+    document.getElementById('filterInput').value = '';
+    applyFilter();
+  }
+
+  function applyFilter() {
+    const q = document.getElementById('filterInput').value.trim().toLowerCase();
+    const view = document.getElementById(`view-${currentRun}`);
+    const rows = view.querySelectorAll('tbody tr');
+    let shown = 0;
+    rows.forEach(r => {
+      const ev = r.dataset.eval;
+      const show = !q || ev.includes(q) || (`#${ev}`).includes(q);
+      r.classList.toggle('hidden-row', !show);
+      if (show) shown++;
+    });
+    document.getElementById('rowCount').textContent = `${shown} of ${DATA[currentRun].length} evals shown`;
+  }
+
+  buildRunSwitcher();
+  buildViews();
+  applyFilter();
+  document.getElementById('filterInput').addEventListener('input', applyFilter);
+</script>
