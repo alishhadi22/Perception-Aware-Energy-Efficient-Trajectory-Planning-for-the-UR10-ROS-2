@@ -1,88 +1,127 @@
-# Perception-Aware, Energy-Efficient Trajectory Planning for the UR10 Cobot (ROS 2)
+# Perception-Aware, Energy-Efficient Trajectory Planning for the UR10 Cobot
 
-Final Year Project (Lebanese University) comparing four metaheuristic
-optimizers for energy-efficient trajectory optimization of a UR10 arm,
-simulated in ROS 2 Jazzy / Gazebo Harmonic / MoveIt 2.
+A Final Year Project at the Lebanese University, investigating how
+metaheuristic optimization can reduce the energy consumption of a UR10
+collaborative robot's trajectories, and how camera-based obstacle
+perception can be integrated into the motion planning process. The full
+system is simulated in ROS 2 Jazzy with Gazebo Harmonic and MoveIt 2.
 
-## Optimizers compared
+## Overview
 
-- **CMA-ES** (Covariance Matrix Adaptation Evolution Strategy)
-- **GWO** (Grey Wolf Optimizer)
-- **PSO** (Particle Swarm Optimization) — hyperparameters matched to
+Industrial robot trajectories are usually programmed for reachability and
+cycle time, with little regard for the energy they consume. This project
+treats energy as an explicit optimization objective: four population-based
+metaheuristics are used to search a parameterized trajectory space and are
+compared against a common, non-optimized baseline and against each other.
+
+A second, complementary line of work looks at perception: rather than
+assuming a known, static environment, the robot detects obstacles from
+onboard cameras and plans a collision-free path around them, closing the
+loop between what the robot sees and how it moves.
+
+## Optimization approach
+
+Each optimizer searches the same 30-dimensional space (five parameters per
+joint, across six joints: velocity, acceleration, compression, offset, and
+blending weight) and is evaluated against an identical objective function:
+
+```
+J = wE·E + wT·T + wS·S + wR·R
+```
+
+where `E`, `T`, `S`, and `R` are the trajectory's energy consumption,
+execution time, smoothness (jerk), and obstacle-proximity risk, and the
+weights are derived through an AHP (Analytic Hierarchy Process) pairwise
+comparison. The objective function and its weighting are implemented once,
+in `energy_objective.py`, and shared by all four optimizers so that results
+are directly comparable.
+
+The four algorithms compared are:
+
+- **CMA-ES** – Covariance Matrix Adaptation Evolution Strategy
+- **GWO** – Grey Wolf Optimizer
+- **PSO** – Particle Swarm Optimization, with hyperparameters matched to
   El Hachem et al., *"A physics-based design-stage digital twin for
   time-energy trajectory optimization of an industrial robotic
-  manipulator,"* Digital Engineering 11 (2026) 100119
-- **QPSO** (Quantum-behaved Particle Swarm Optimization) — Sun, Feng, Xu,
-  *"Particle swarm optimization with particles having quantum behavior,"*
-  CEC 2004, pp. 325-331
+  manipulator,"* Digital Engineering 11 (2026) 100119, for consistency with
+  prior work from the same research group
+- **QPSO** – Quantum-behaved Particle Swarm Optimization, following Sun,
+  Feng, and Xu, *"Particle swarm optimization with particles having
+  quantum behavior,"* CEC 2004, pp. 325–331
 
-Each optimizer searches a 30-variable space (5 parameters × 6 joints:
-velocity, acceleration, compress, offset, weight) to minimize a weighted
-objective `J = wE*E + wT*T + wS*S + wR*R` (energy, time, smoothness,
-jerk/reversal) with AHP-derived weights (`energy_objective.py`).
+Each is run against two distinct trajectories (referred to as Path 1 and
+Path 2) and evaluated over three independent runs, all under a fixed
+evaluation budget so the comparison between algorithms is fair.
 
 ## Obstacle-aware perception and planning
 
-A second line of work adds camera-based obstacle perception feeding into
-collision-free motion planning, so the "perception-aware" half of the
-project is not just energy optimization on a fixed path:
+To move beyond optimizing a fixed, known trajectory, this part of the
+project adds a perception layer:
 
-- **Detection**: two wrist-mounted cameras are used to cluster the point
-  cloud of two static obstacles in the workspace (k-means, k=2), then fit
-  each a minimum-area oriented bounding box (PCA on the cluster's XY
-  footprint, falling back to an axis-aligned box when the PCA axis is
-  unstable on near-square clusters) so rotated real-world obstacles are
-  registered accurately rather than as an inflated axis-aligned box.
-- **Planning**: detected obstacles are registered as MoveIt collision
-  objects and a collision-free path is planned with OMPL/RRTConnect
-  (MoveIt's default planner) via `/plan_kinematic_path`, then executed.
-- **Combined pipeline**: scan → detect → register → plan → execute is
-  chained into one runnable script end-to-end.
+- **Detection** – two wrist-mounted cameras observe the workspace, and the
+  resulting point cloud is clustered (k-means, k = 2) into individual
+  obstacles. Each obstacle's footprint is fitted with a minimum-area
+  bounding box, using PCA to estimate its orientation and falling back to
+  an axis-aligned box when the PCA axis becomes unstable on near-square
+  clusters. This avoids the common failure mode of representing a rotated
+  object as an oversized, axis-aligned box.
+- **Planning** – detected obstacles are registered as collision objects in
+  the MoveIt planning scene, and a collision-free path is planned with
+  OMPL's RRTConnect planner before being executed on the robot.
+- **Combined pipeline** – detection, registration, planning, and execution
+  are chained into a single script that runs the entire process end to end.
 
-This part of the project is still being actively debugged (padding/margin
-tuning around detected obstacles is the current open issue) — see the
-project's own `CLAUDE.md` (not included here) for the full bug-by-bug
-history if you're picking this back up.
+This component is still under active development; obstacle padding and
+safety-margin tuning is the current focus. See the project's internal
+`CLAUDE.md` notes for the detailed debugging history if you're continuing
+this work.
 
-## Contents
+## Repository structure
 
-- `src/` — optimizer implementations and shared dependencies:
-  - `cmaes_optimizer.py`, `gwo_optimizer.py`, `pso_optimizer.py`,
-    `qpso_optimizer.py` — the four optimizers, structured identically for a
-    fair comparison.
-  - `energy_objective.py` — the shared objective function and AHP weights.
-  - `baseline_trajectory.py` — establishes the reference (non-optimized)
-    trajectory each optimizer is compared against.
-- `src/obstacle_avoidance/` — camera-based obstacle detection and
-  obstacle-aware motion planning:
-  - `scan_obstacles_from_cameras.py` — moves to a scan pose, clusters the
-    two obstacles from camera point clouds, and estimates each one's
-    oriented bounding box.
-  - `add_obstacles_to_planning_scene.py` — registers the two known static
-    obstacles (ground-truth geometry) as MoveIt collision objects, so
-    planning can be tested independently of the camera pipeline.
-  - `plan_obstacle_avoiding_path.py` — plans and executes a collision-free
-    path (OMPL/RRTConnect) around already-registered obstacles.
-  - `obstacle_avoidance_pipeline.py` — combines detection, registration,
-    planning, and execution into one end-to-end script.
-  - `find_scan_pose.py` — utility used to derive a wrist orientation where
-    the camera actually looks at the obstacle region (via `/compute_fk`,
-    no robot motion).
-- `results/` — HTML evaluation-history plots for each optimizer, on two
-  trajectories (Path 1, Path 2). Viewable directly in-browser (via GitHub
-  Pages) rather than downloading:
-  - [CMA-ES — Path 1](https://alishhadi22.github.io/Perception-Aware-Energy-Efficient-Trajectory-Planning-for-the-UR10-ROS-2/results/cmaes_path1_evals.html) · [Path 2](https://alishhadi22.github.io/Perception-Aware-Energy-Efficient-Trajectory-Planning-for-the-UR10-ROS-2/results/cmaes_path2_evals.html) (rebuilt on Path 1's template — run cards + full per-joint detail)
-  - [GWO — Path 1](https://alishhadi22.github.io/Perception-Aware-Energy-Efficient-Trajectory-Planning-for-the-UR10-ROS-2/results/gwo_path1_evals.html) · [Path 2](https://alishhadi22.github.io/Perception-Aware-Energy-Efficient-Trajectory-Planning-for-the-UR10-ROS-2/results/gwo_path2_evals.html)
-  - [PSO — Path 1](https://alishhadi22.github.io/Perception-Aware-Energy-Efficient-Trajectory-Planning-for-the-UR10-ROS-2/results/pso_path1_evals.html) · [Path 2](https://alishhadi22.github.io/Perception-Aware-Energy-Efficient-Trajectory-Planning-for-the-UR10-ROS-2/results/pso_path2_evals.html)
-  - [QPSO — Path 1](https://alishhadi22.github.io/Perception-Aware-Energy-Efficient-Trajectory-Planning-for-the-UR10-ROS-2/results/qpso_path1_evals.html) · [Path 2](https://alishhadi22.github.io/Perception-Aware-Energy-Efficient-Trajectory-Planning-for-the-UR10-ROS-2/results/qpso_path2_evals.html)
+```
+src/
+├── cmaes_optimizer.py, gwo_optimizer.py,
+│   pso_optimizer.py, qpso_optimizer.py   Four optimizers, identically structured
+├── energy_objective.py                   Shared objective function and AHP weights
+├── baseline_trajectory.py                Non-optimized reference trajectory
+└── obstacle_avoidance/
+    ├── scan_obstacles_from_cameras.py    Camera-based obstacle detection
+    ├── add_obstacles_to_planning_scene.py Registers known obstacles for planning
+    ├── plan_obstacle_avoiding_path.py    Obstacle-aware planning and execution
+    ├── obstacle_avoidance_pipeline.py    End-to-end detect → plan → execute
+    └── find_scan_pose.py                 Utility: finds a camera pose for scanning
+
+results/                                  Per-evaluation result pages (see below)
+```
+
+## Results
+
+Each optimizer's full per-evaluation, per-joint search history is available
+as an interactive page, hosted directly from this repository via GitHub
+Pages:
+
+| Algorithm | Path 1 | Path 2 |
+|---|---|---|
+| CMA-ES | [view](https://alishhadi22.github.io/Perception-Aware-Energy-Efficient-Trajectory-Planning-for-the-UR10-ROS-2/results/cmaes_path1_evals.html) | [view](https://alishhadi22.github.io/Perception-Aware-Energy-Efficient-Trajectory-Planning-for-the-UR10-ROS-2/results/cmaes_path2_evals.html) |
+| GWO | [view](https://alishhadi22.github.io/Perception-Aware-Energy-Efficient-Trajectory-Planning-for-the-UR10-ROS-2/results/gwo_path1_evals.html) | [view](https://alishhadi22.github.io/Perception-Aware-Energy-Efficient-Trajectory-Planning-for-the-UR10-ROS-2/results/gwo_path2_evals.html) |
+| PSO | [view](https://alishhadi22.github.io/Perception-Aware-Energy-Efficient-Trajectory-Planning-for-the-UR10-ROS-2/results/pso_path1_evals.html) | [view](https://alishhadi22.github.io/Perception-Aware-Energy-Efficient-Trajectory-Planning-for-the-UR10-ROS-2/results/pso_path2_evals.html) |
+| QPSO | [view](https://alishhadi22.github.io/Perception-Aware-Energy-Efficient-Trajectory-Planning-for-the-UR10-ROS-2/results/qpso_path1_evals.html) | [view](https://alishhadi22.github.io/Perception-Aware-Energy-Efficient-Trajectory-Planning-for-the-UR10-ROS-2/results/qpso_path2_evals.html) |
+
+Each page shows, per run: the best trajectory found, its objective value,
+execution duration, and the full per-joint parameter breakdown for every
+evaluation.
 
 ## Requirements
 
-ROS 2 Jazzy, Gazebo Harmonic, MoveIt 2, and a UR10 description/moveit config
-(`ur_description`, `ur_moveit_config`). Each script is a standalone ROS 2
-node run individually, e.g.:
+- ROS 2 Jazzy
+- Gazebo Harmonic
+- MoveIt 2
+- A UR10 description and MoveIt configuration (`ur_description`,
+  `ur_moveit_config`)
 
-```
+Each script is a standalone ROS 2 node, run directly with Python:
+
+```bash
 python3 cmaes_optimizer.py
 python3 src/obstacle_avoidance/obstacle_avoidance_pipeline.py
 ```
