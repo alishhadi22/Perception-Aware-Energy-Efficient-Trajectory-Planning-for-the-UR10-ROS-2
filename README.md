@@ -107,9 +107,12 @@ Pages:
 | PSO | [view](https://alishhadi22.github.io/Perception-Aware-Energy-Efficient-Trajectory-Planning-for-the-UR10-ROS-2/results/pso_path1_evals.html) | [view](https://alishhadi22.github.io/Perception-Aware-Energy-Efficient-Trajectory-Planning-for-the-UR10-ROS-2/results/pso_path2_evals.html) |
 | QPSO | [view](https://alishhadi22.github.io/Perception-Aware-Energy-Efficient-Trajectory-Planning-for-the-UR10-ROS-2/results/qpso_path1_evals.html) | [view](https://alishhadi22.github.io/Perception-Aware-Energy-Efficient-Trajectory-Planning-for-the-UR10-ROS-2/results/qpso_path2_evals.html) |
 
-Each page shows, per run: the best trajectory found, its objective value,
-execution duration, and the full per-joint parameter breakdown for every
-evaluation.
+Each page shows, per run, the best trajectory found, its objective value,
+and execution duration for every evaluation. CMA-ES's pages additionally
+break this down per joint (velocity, acceleration, compression, offset,
+weight); GWO, PSO, and QPSO report swarm-level average velocity and
+compression instead, since that is the granularity their logged data
+provides.
 
 ## Requirements
 

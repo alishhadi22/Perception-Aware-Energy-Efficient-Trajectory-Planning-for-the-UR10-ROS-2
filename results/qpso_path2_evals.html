@@ -1,225 +1,254 @@
-<title>QPSO — Path 2 (I→^) Per-Evaluation Summary</title>
+<title>QPSO Path 2 — Per-Evaluation Summary</title>
 <style>
-:root {
-  --bg: #F5F8FA;
-  --surface: #FFFFFF;
-  --surface-alt: #EBF1F4;
-  --text: #16232E;
-  --text-muted: #4C6272;
-  --border: #D6E2E8;
-  --accent: #065A82;
-  --accent-soft: #E4EFF4;
-  --best-bg: #FCEFE0;
-  --best-text: #8A4A08;
-  --best-border: #E8B87A;
-  --mono: ui-monospace, "SF Mono", "Cascadia Code", "Consolas", monospace;
-  --sans: ui-sans-serif, "Segoe UI", Roboto, system-ui, sans-serif;
-}
-@media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0D2137;
-    --surface: #143451;
-    --surface-alt: #1A3F5F;
-    --text: #E4EDF5;
-    --text-muted: #93AEBF;
-    --border: #24455F;
-    --accent: #4FB3D9;
-    --accent-soft: #163E56;
-    --best-bg: #3A2A12;
-    --best-text: #E5A24D;
-    --best-border: #6B4A1E;
+    --bg: #F4F8FA;
+    --bg-elevated: #FFFFFF;
+    --bg-inset: #EBF1F4;
+    --ink: #0D2137;
+    --muted: #4B6478;
+    --faint: #8399A9;
+    --accent: #065A82;
+    --accent-strong: #1C7293;
+    --accent-wash: rgba(28, 114, 147, 0.08);
+    --best: #B8650A;
+    --best-wash: rgba(184, 101, 10, 0.10);
+    --border: rgba(13, 33, 55, 0.12);
+    --border-soft: rgba(13, 33, 55, 0.07);
+    --shadow: 0 1px 2px rgba(13, 33, 55, 0.06), 0 8px 24px rgba(13, 33, 55, 0.05);
   }
-}
-:root[data-theme="dark"] {
-  --bg: #0D2137; --surface: #143451; --surface-alt: #1A3F5F;
-  --text: #E4EDF5; --text-muted: #93AEBF; --border: #24455F;
-  --accent: #4FB3D9; --accent-soft: #163E56;
-  --best-bg: #3A2A12; --best-text: #E5A24D; --best-border: #6B4A1E;
-}
-:root[data-theme="light"] {
-  --bg: #F5F8FA; --surface: #FFFFFF; --surface-alt: #EBF1F4;
-  --text: #16232E; --text-muted: #4C6272; --border: #D6E2E8;
-  --accent: #065A82; --accent-soft: #E4EFF4;
-  --best-bg: #FCEFE0; --best-text: #8A4A08; --best-border: #E8B87A;
-}
-* { box-sizing: border-box; }
-body {
-  margin: 0; background: var(--bg); color: var(--text);
-  font-family: var(--sans); line-height: 1.5;
-  padding: 2rem 1.25rem 4rem;
-}
-.wrap { max-width: 980px; margin: 0 auto; }
-header h1 {
-  font-size: 1.5rem; margin: 0 0 0.35rem; text-wrap: balance;
-  letter-spacing: -0.01em;
-}
-header .sub { color: var(--text-muted); font-size: 0.95rem; margin: 0 0 1.1rem; }
-.meta-row {
-  display: flex; flex-wrap: wrap; gap: 0.5rem 0.75rem; margin-bottom: 1.4rem;
-}
-.chip {
-  background: var(--surface-alt); border: 1px solid var(--border);
-  border-radius: 6px; padding: 0.3rem 0.65rem; font-size: 0.82rem;
-  color: var(--text-muted); font-family: var(--mono);
-}
-.chip b { color: var(--text); font-weight: 600; }
-.note {
-  background: var(--surface-alt); border: 1px solid var(--border);
-  border-left: 3px solid var(--accent); border-radius: 6px;
-  padding: 0.8rem 1rem; font-size: 0.88rem; color: var(--text-muted);
-  margin-bottom: 1.4rem;
-}
-.note b { color: var(--text); }
-.runs {
-  display: flex; gap: 0.4rem; margin-bottom: 1rem; flex-wrap: wrap;
-}
-.run-btn {
-  font-family: var(--mono); font-size: 0.85rem; padding: 0.45rem 0.9rem;
-  border-radius: 7px; border: 1px solid var(--border); background: var(--surface);
-  color: var(--text-muted); cursor: pointer; transition: all 0.15s ease;
-}
-.run-btn:hover { border-color: var(--accent); color: var(--text); }
-.run-btn.active {
-  background: var(--accent); color: var(--surface); border-color: var(--accent);
-  font-weight: 600;
-}
-.table-scroll {
-  overflow-x: auto; border: 1px solid var(--border); border-radius: 10px;
-  background: var(--surface);
-}
-table { border-collapse: collapse; width: 100%; font-size: 0.85rem; }
-thead th {
-  position: sticky; top: 0; background: var(--surface-alt); text-align: right;
-  padding: 0.55rem 0.8rem; font-weight: 600; color: var(--text-muted);
-  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.03em;
-  border-bottom: 1px solid var(--border); white-space: nowrap;
-}
-thead th:first-child, tbody td:first-child { text-align: left; }
-tbody td {
-  padding: 0.5rem 0.8rem; text-align: right; font-family: var(--mono);
-  font-variant-numeric: tabular-nums; border-bottom: 1px solid var(--border);
-  white-space: nowrap;
-}
-tbody tr:last-child td { border-bottom: none; }
-tbody tr:hover { background: var(--surface-alt); }
-tbody tr.best { background: var(--best-bg); }
-tbody tr.best td:first-child { color: var(--best-text); font-weight: 700; }
-.best-badge {
-  display: inline-block; margin-left: 0.4rem; font-family: var(--sans);
-  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.03em;
-  background: var(--best-bg); color: var(--best-text);
-  border: 1px solid var(--best-border); border-radius: 4px;
-  padding: 0.1rem 0.4rem; text-transform: uppercase;
-}
-.eval-row { cursor: default; }
-.joint-detail {
-  display: none; background: var(--surface-alt);
-}
-.joint-detail.open { display: table-row; }
-.joint-detail td {
-  padding: 0.6rem 0.9rem; font-family: var(--mono); font-size: 0.8rem;
-}
-.joint-table { width: 100%; border-collapse: collapse; }
-.joint-table th {
-  text-align: right; padding: 0.25rem 0.6rem; font-size: 0.7rem;
-  color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.02em;
-  font-family: var(--sans);
-}
-.joint-table th:first-child, .joint-table td:first-child { text-align: left; }
-.joint-table td {
-  text-align: right; padding: 0.25rem 0.6rem; font-variant-numeric: tabular-nums;
-}
-footer { margin-top: 1.5rem; color: var(--text-muted); font-size: 0.8rem; }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0B1B2B;
+      --bg-elevated: #10263D;
+      --bg-inset: #0D2137;
+      --ink: #EAF1F5;
+      --muted: #93AEC0;
+      --faint: #5B7688;
+      --accent: #4FB3D9;
+      --accent-strong: #6FC6E8;
+      --accent-wash: rgba(79, 179, 217, 0.10);
+      --best: #E5A24D;
+      --best-wash: rgba(229, 162, 77, 0.12);
+      --border: rgba(234, 241, 245, 0.12);
+      --border-soft: rgba(234, 241, 245, 0.07);
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0B1B2B; --bg-elevated: #10263D; --bg-inset: #0D2137; --ink: #EAF1F5;
+    --muted: #93AEC0; --faint: #5B7688; --accent: #4FB3D9; --accent-strong: #6FC6E8;
+    --accent-wash: rgba(79, 179, 217, 0.10); --best: #E5A24D; --best-wash: rgba(229, 162, 77, 0.12);
+    --border: rgba(234, 241, 245, 0.12); --border-soft: rgba(234, 241, 245, 0.07);
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
+  }
+  :root[data-theme="light"] {
+    --bg: #F4F8FA; --bg-elevated: #FFFFFF; --bg-inset: #EBF1F4; --ink: #0D2137;
+    --muted: #4B6478; --faint: #8399A9; --accent: #065A82; --accent-strong: #1C7293;
+    --accent-wash: rgba(28, 114, 147, 0.08); --best: #B8650A; --best-wash: rgba(184, 101, 10, 0.10);
+    --border: rgba(13, 33, 55, 0.12); --border-soft: rgba(13, 33, 55, 0.07);
+    --shadow: 0 1px 2px rgba(13, 33, 55, 0.06), 0 8px 24px rgba(13, 33, 55, 0.05);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: -apple-system, "Segoe UI", "Inter", ui-sans-serif, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  body { max-width: 1000px; margin: 0 auto; padding: 2.5rem 1.5rem 5rem; }
+  .mono { font-family: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; }
+
+  header.page { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+  .eyebrow { text-transform: uppercase; letter-spacing: 0.09em; font-size: 0.72rem; font-weight: 600; color: var(--accent); }
+  h1 { font-size: clamp(1.5rem, 2.6vw, 2.05rem); font-weight: 650; letter-spacing: -0.01em; margin: 0.1rem 0 0; text-wrap: balance; }
+  .subtitle { color: var(--muted); font-size: 0.94rem; max-width: 66ch; line-height: 1.55; margin: 0.3rem 0 0; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 0.4rem 1.2rem; margin-top: 0.9rem; font-size: 0.78rem; color: var(--faint); }
+  .meta-row span b { color: var(--muted); font-weight: 600; }
+
+  .note {
+    background: var(--accent-wash);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 0.83rem;
+    color: var(--muted);
+    line-height: 1.55;
+    margin-bottom: 1.75rem;
+  }
+  .note b { color: var(--ink); }
+  .note.warn { border-left-color: var(--best); background: var(--best-wash); }
+  .note.warn b { color: var(--best); }
+
+  .runs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.9rem; margin-bottom: 1.75rem; }
+  @media (max-width: 700px) { .runs { grid-template-columns: 1fr; } }
+  .run-card {
+    text-align: left; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 10px;
+    padding: 1rem 1.15rem; cursor: pointer; box-shadow: var(--shadow); transition: border-color 120ms ease, transform 120ms ease;
+    font-family: inherit; color: inherit; position: relative; overflow: hidden;
+  }
+  .run-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--accent); opacity: 0; transition: opacity 120ms ease; }
+  .run-card:hover { transform: translateY(-1px); }
+  .run-card.active { border-color: var(--accent); }
+  .run-card.active::before { opacity: 1; }
+  .run-card.outlier::after {
+    content: "Outlier"; position: absolute; top: 0.6rem; right: 0.7rem; font-size: 0.6rem; text-transform: uppercase;
+    letter-spacing: 0.05em; font-weight: 700; color: var(--best); background: var(--best-wash);
+    padding: 0.1rem 0.4rem; border-radius: 999px;
+  }
+  .run-card .label { display: flex; align-items: baseline; justify-content: space-between; font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+  .run-card .pill { font-size: 0.68rem; padding: 0.12rem 0.5rem; border-radius: 999px; background: var(--best-wash); color: var(--best); font-weight: 700; letter-spacing: 0.02em; }
+  .run-card .stat-row { display: flex; align-items: baseline; gap: 0.5rem; margin-top: 0.55rem; }
+  .run-card .stat-row .val { font-size: 1.5rem; font-weight: 650; letter-spacing: -0.01em; }
+  .run-card .stat-row .improve { font-size: 0.85rem; font-weight: 600; color: var(--accent-strong); }
+  .run-card .sub-stats { display: flex; gap: 1rem; margin-top: 0.5rem; font-size: 0.78rem; color: var(--faint); }
+  .run-card .sub-stats b { color: var(--muted); font-weight: 600; }
+
+  .toolbar { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.9rem; flex-wrap: wrap; }
+  .toolbar input[type="search"] {
+    flex: 1 1 220px; max-width: 280px; background: var(--bg-elevated); border: 1px solid var(--border);
+    border-radius: 8px; padding: 0.5rem 0.7rem; color: var(--ink); font-size: 0.85rem; font-family: inherit;
+  }
+  .toolbar input[type="search"]:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .toolbar .count { font-size: 0.76rem; color: var(--muted); margin-left: auto; }
+
+  .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; background: var(--bg-elevated); box-shadow: var(--shadow); }
+  table { border-collapse: collapse; width: 100%; font-size: 0.85rem; min-width: 560px; }
+  thead th {
+    position: sticky; top: 0; background: var(--bg-inset); color: var(--muted); text-transform: uppercase;
+    font-size: 0.68rem; letter-spacing: 0.05em; font-weight: 700; text-align: right; padding: 0.55rem 0.9rem;
+    border-bottom: 1px solid var(--border); white-space: nowrap;
+  }
+  thead th:first-child { text-align: left; }
+  tbody td { padding: 0.45rem 0.9rem; text-align: right; border-bottom: 1px solid var(--border-soft); white-space: nowrap; }
+  tbody td.eval-cell { text-align: left; font-weight: 700; color: var(--ink); }
+  tbody tr.eval-even { background: var(--bg-inset); }
+  tbody tr.is-best { background: var(--best-wash); }
+  tbody tr.is-best td.eval-cell { color: var(--best); }
+  tbody tr.is-best td.eval-cell .best-tag { display: inline-block; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--best); font-weight: 700; margin-left: 0.4rem; }
+  tbody tr.hidden-row { display: none; }
+
+  .view { display: none; }
+  .view.active { display: block; animation: fade 160ms ease; }
+  @media (prefers-reduced-motion: reduce) { .view.active { animation: none; } }
+  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+
+  footer.page { margin-top: 2.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border); font-size: 0.78rem; color: var(--faint); line-height: 1.7; }
+  footer.page code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; background: var(--bg-inset); padding: 0.08rem 0.35rem; border-radius: 4px; font-size: 0.87em; }
 </style>
-<div class="wrap">
-  <header>
-    <h1>QPSO — Path 2 (I→^) Per-Evaluation Summary</h1>
-    <p class="sub">Eval-level summary for all 3 runs, 60 evals each (2026-07-13)</p>
-  </header>
-  <div class="meta-row"><span class="chip">Particles: <b>6</b></span><span class="chip">Beta: <b>1.0 &rarr; 0.5</b></span><span class="chip">Baseline J: <b>0.673094</b></span></div>
-  <div class="note">This implementation records swarm-level average velocity and compression ratio for each evaluation rather than individual per-joint values, consistent with the Grey Wolf Optimizer and Particle Swarm Optimization results. Run 3 included several evaluations that exceeded the controller's response-time threshold; these were penalized under the same evaluation protocol applied to all optimizers and are retained in the results below.</div>
-  <div class="runs" id="runSwitcher"></div>
-  <div class="table-scroll">
-    <table>
-      <thead><tr id="tableHead"></tr></thead>
-      <tbody id="tableBody"></tbody>
-    </table>
+
+<header class="page">
+  <span class="eyebrow">UR10 Trajectory Optimization &middot; Path 2 (I &rarr; ^)</span>
+  <h1>QPSO &mdash; Per-Evaluation Summary</h1>
+  <p class="subtitle">All 60 evaluations across 3 independent Quantum-behaved Particle Swarm Optimization runs (100&nbsp;Hz physics, 30 variables &mdash; 5 params &times; 6 joints, 6 particles).</p>
+  <div class="meta-row">
+    <span><b>Baseline J</b> 0.673094</span>
+    <span><b>Baseline duration</b> 8.093s</span>
+    <span><b>Max evals/run</b> 60</span>
+    <span><b>Particles</b> 6</span>
+    <span><b>&beta; anneal</b> 1.0 &rarr; 0.5</span>
   </div>
-  <footer>Path 2 (I→^) — data compiled from three independent Quantum-behaved Particle Swarm Optimization runs.</footer>
+</header>
+
+<div class="note">
+  <b>Aggregate parameters shown.</b> As with the GWO and PSO results, this implementation records swarm-level average velocity and compression ratio for each evaluation rather than individual per-joint values. QPSO has no velocity state of its own (each particle's position is updated via a quantum delta-potential-well model around the mean personal best), so &ldquo;avg velocity&rdquo; here reflects the decoded joint-velocity parameter, not a swarm velocity vector. The table below reports every metric captured during the optimization runs.
 </div>
+
+
+<div class="runs" id="runSwitcher"></div>
+
+<div class="toolbar">
+  <input type="search" id="filterInput" placeholder="Filter by eval #&hellip;" aria-label="Filter evaluations">
+  <span class="count" id="rowCount"></span>
+</div>
+
+<div id="views"></div>
+
+<footer class="page">
+  Data compiled from three independent Quantum-behaved Particle Swarm Optimization runs (evaluation counts vary slightly per run; see run cards above).<br>
+  Parameter bounds (per joint, not logged individually): vel &isin; [0.1, 1.0] &middot; accel &isin; [0.1, 1.0] &middot; compress &isin; [0.5, 1.0] &middot; offset &isin; [&minus;0.3, +0.3] rad &middot; weight &isin; [0.05, 1.0]
+</footer>
+
+<script id="data-json" type="application/json">{"run1":[{"eval":1,"avg_vel":0.457,"avg_compress":0.803,"J":0.627657,"dur":6.55,"samples":665},{"eval":3,"avg_vel":0.329,"avg_compress":0.8,"J":0.864682,"dur":6.5,"samples":660},{"eval":4,"avg_vel":0.655,"avg_compress":0.629,"J":0.811851,"dur":5.1,"samples":520},{"eval":5,"avg_vel":0.565,"avg_compress":0.837,"J":0.645811,"dur":6.8,"samples":690},{"eval":6,"avg_vel":0.399,"avg_compress":0.723,"J":0.593285,"dur":5.9,"samples":599},{"eval":8,"avg_vel":0.532,"avg_compress":0.737,"J":0.604026,"dur":6.0,"samples":610},{"eval":9,"avg_vel":0.37,"avg_compress":0.783,"J":0.631348,"dur":6.35,"samples":645},{"eval":10,"avg_vel":0.401,"avg_compress":0.624,"J":0.768028,"dur":5.05,"samples":515},{"eval":11,"avg_vel":0.67,"avg_compress":0.748,"J":0.617026,"dur":6.1,"samples":620},{"eval":12,"avg_vel":0.457,"avg_compress":0.793,"J":0.645538,"dur":6.45,"samples":655},{"eval":13,"avg_vel":0.355,"avg_compress":0.709,"J":0.59781,"dur":5.75,"samples":585},{"eval":14,"avg_vel":0.386,"avg_compress":0.69,"J":0.582102,"dur":5.6,"samples":570},{"eval":15,"avg_vel":0.374,"avg_compress":0.682,"J":0.58357,"dur":5.55,"samples":565},{"eval":16,"avg_vel":0.345,"avg_compress":0.747,"J":0.847701,"dur":6.05,"samples":615},{"eval":17,"avg_vel":0.616,"avg_compress":0.739,"J":0.654098,"dur":6.0,"samples":610},{"eval":18,"avg_vel":0.45,"avg_compress":0.706,"J":0.591137,"dur":5.75,"samples":585},{"eval":19,"avg_vel":0.339,"avg_compress":0.665,"J":0.578008,"dur":5.4,"samples":550},{"eval":20,"avg_vel":0.463,"avg_compress":0.677,"J":0.579723,"dur":5.5,"samples":560},{"eval":21,"avg_vel":0.434,"avg_compress":0.671,"J":0.578019,"dur":5.45,"samples":555},{"eval":22,"avg_vel":0.327,"avg_compress":0.668,"J":0.575554,"dur":5.45,"samples":555},{"eval":23,"avg_vel":0.545,"avg_compress":0.726,"J":0.632452,"dur":5.9,"samples":600},{"eval":24,"avg_vel":0.397,"avg_compress":0.706,"J":0.586,"dur":5.75,"samples":585},{"eval":25,"avg_vel":0.353,"avg_compress":0.632,"J":0.566934,"dur":5.15,"samples":525},{"eval":26,"avg_vel":0.388,"avg_compress":0.686,"J":0.583064,"dur":5.6,"samples":570},{"eval":27,"avg_vel":0.474,"avg_compress":0.7,"J":0.581439,"dur":5.7,"samples":580},{"eval":28,"avg_vel":0.325,"avg_compress":0.735,"J":0.610842,"dur":6.0,"samples":610},{"eval":29,"avg_vel":0.396,"avg_compress":0.68,"J":0.6036,"dur":5.55,"samples":565},{"eval":30,"avg_vel":0.343,"avg_compress":0.613,"J":0.562063,"dur":5.0,"samples":510},{"eval":31,"avg_vel":0.397,"avg_compress":0.691,"J":0.580598,"dur":5.6,"samples":569},{"eval":32,"avg_vel":0.385,"avg_compress":0.623,"J":0.559087,"dur":5.05,"samples":515},{"eval":33,"avg_vel":0.482,"avg_compress":0.659,"J":0.570702,"dur":5.35,"samples":545},{"eval":34,"avg_vel":0.252,"avg_compress":0.626,"J":0.56138,"dur":5.1,"samples":520},{"eval":35,"avg_vel":0.569,"avg_compress":0.638,"J":0.63572,"dur":5.2,"samples":530},{"eval":36,"avg_vel":0.368,"avg_compress":0.63,"J":0.568815,"dur":5.1,"samples":520},{"eval":37,"avg_vel":0.364,"avg_compress":0.643,"J":0.57432,"dur":5.25,"samples":535},{"eval":38,"avg_vel":0.336,"avg_compress":0.638,"J":0.566276,"dur":5.2,"samples":530},{"eval":39,"avg_vel":0.48,"avg_compress":0.661,"J":0.573706,"dur":5.4,"samples":550},{"eval":40,"avg_vel":0.329,"avg_compress":0.622,"J":0.560396,"dur":5.05,"samples":515},{"eval":41,"avg_vel":0.399,"avg_compress":0.656,"J":0.572836,"dur":5.35,"samples":545},{"eval":42,"avg_vel":0.32,"avg_compress":0.625,"J":0.562185,"dur":5.1,"samples":520},{"eval":43,"avg_vel":0.358,"avg_compress":0.653,"J":0.570087,"dur":5.3,"samples":540},{"eval":44,"avg_vel":0.418,"avg_compress":0.612,"J":0.562755,"dur":5.0,"samples":510},{"eval":45,"avg_vel":0.465,"avg_compress":0.632,"J":0.562126,"dur":5.15,"samples":525},{"eval":46,"avg_vel":0.45,"avg_compress":0.626,"J":0.570667,"dur":5.1,"samples":520},{"eval":47,"avg_vel":0.336,"avg_compress":0.6,"J":0.555715,"dur":4.9,"samples":500},{"eval":48,"avg_vel":0.347,"avg_compress":0.616,"J":0.558602,"dur":5.0,"samples":510},{"eval":49,"avg_vel":0.396,"avg_compress":0.663,"J":0.575687,"dur":5.4,"samples":550},{"eval":50,"avg_vel":0.382,"avg_compress":0.588,"J":0.551649,"dur":4.8,"samples":490},{"eval":51,"avg_vel":0.446,"avg_compress":0.638,"J":0.566894,"dur":5.2,"samples":530},{"eval":52,"avg_vel":0.402,"avg_compress":0.617,"J":0.559369,"dur":5.0,"samples":510},{"eval":53,"avg_vel":0.319,"avg_compress":0.613,"J":0.5628,"dur":5.0,"samples":509},{"eval":54,"avg_vel":0.313,"avg_compress":0.608,"J":0.555196,"dur":4.95,"samples":505},{"eval":55,"avg_vel":0.325,"avg_compress":0.584,"J":0.547637,"dur":4.75,"samples":485},{"eval":56,"avg_vel":0.383,"avg_compress":0.588,"J":0.550424,"dur":4.8,"samples":490},{"eval":57,"avg_vel":0.38,"avg_compress":0.621,"J":0.560265,"dur":5.05,"samples":515},{"eval":58,"avg_vel":0.369,"avg_compress":0.601,"J":0.556789,"dur":4.9,"samples":500},{"eval":59,"avg_vel":0.322,"avg_compress":0.611,"J":0.567018,"dur":4.95,"samples":505},{"eval":60,"avg_vel":0.31,"avg_compress":0.6,"J":0.554816,"dur":4.9,"samples":500}],"run2":[{"eval":1,"avg_vel":0.55,"avg_compress":0.804,"J":0.796692,"dur":14.0,"samples":1410},{"eval":2,"avg_vel":0.555,"avg_compress":0.822,"J":0.747471,"dur":6.65,"samples":675},{"eval":3,"avg_vel":0.575,"avg_compress":0.753,"J":0.726641,"dur":6.1,"samples":620},{"eval":5,"avg_vel":0.601,"avg_compress":0.699,"J":0.617165,"dur":5.7,"samples":581},{"eval":6,"avg_vel":0.412,"avg_compress":0.702,"J":0.603611,"dur":5.7,"samples":580},{"eval":7,"avg_vel":0.433,"avg_compress":0.687,"J":0.59894,"dur":5.6,"samples":570},{"eval":8,"avg_vel":0.408,"avg_compress":0.732,"J":0.817691,"dur":5.95,"samples":605},{"eval":9,"avg_vel":0.383,"avg_compress":0.734,"J":0.598772,"dur":5.95,"samples":605},{"eval":10,"avg_vel":0.578,"avg_compress":0.656,"J":0.697294,"dur":5.35,"samples":545},{"eval":11,"avg_vel":0.484,"avg_compress":0.699,"J":0.60267,"dur":5.7,"samples":580},{"eval":12,"avg_vel":0.507,"avg_compress":0.821,"J":0.662258,"dur":6.65,"samples":675},{"eval":13,"avg_vel":0.454,"avg_compress":0.701,"J":0.643441,"dur":5.7,"samples":580},{"eval":14,"avg_vel":0.391,"avg_compress":0.719,"J":0.596041,"dur":5.85,"samples":595},{"eval":15,"avg_vel":0.326,"avg_compress":0.738,"J":0.608443,"dur":6.0,"samples":610},{"eval":16,"avg_vel":0.532,"avg_compress":0.725,"J":0.842041,"dur":5.9,"samples":600},{"eval":17,"avg_vel":0.316,"avg_compress":0.74,"J":0.639307,"dur":6.0,"samples":610},{"eval":18,"avg_vel":0.373,"avg_compress":0.736,"J":0.615293,"dur":6.0,"samples":610},{"eval":19,"avg_vel":0.374,"avg_compress":0.746,"J":0.607318,"dur":6.05,"samples":615},{"eval":20,"avg_vel":0.358,"avg_compress":0.798,"J":0.772255,"dur":6.5,"samples":660},{"eval":21,"avg_vel":0.385,"avg_compress":0.724,"J":0.592844,"dur":5.9,"samples":600},{"eval":22,"avg_vel":0.544,"avg_compress":0.662,"J":0.605145,"dur":5.4,"samples":550},{"eval":23,"avg_vel":0.493,"avg_compress":0.716,"J":0.605995,"dur":5.8,"samples":590},{"eval":24,"avg_vel":0.36,"avg_compress":0.709,"J":0.613357,"dur":5.75,"samples":585},{"eval":25,"avg_vel":0.518,"avg_compress":0.686,"J":0.593232,"dur":5.6,"samples":570},{"eval":26,"avg_vel":0.397,"avg_compress":0.719,"J":0.610063,"dur":5.85,"samples":595},{"eval":27,"avg_vel":0.444,"avg_compress":0.72,"J":0.600653,"dur":5.85,"samples":595},{"eval":28,"avg_vel":0.467,"avg_compress":0.692,"J":0.589127,"dur":5.65,"samples":575},{"eval":29,"avg_vel":0.522,"avg_compress":0.775,"J":0.624386,"dur":6.3,"samples":640},{"eval":30,"avg_vel":0.412,"avg_compress":0.777,"J":0.663972,"dur":6.3,"samples":640},{"eval":31,"avg_vel":0.437,"avg_compress":0.678,"J":0.586238,"dur":5.5,"samples":560},{"eval":32,"avg_vel":0.418,"avg_compress":0.75,"J":0.602575,"dur":6.1,"samples":620},{"eval":33,"avg_vel":0.376,"avg_compress":0.741,"J":0.598767,"dur":6.0,"samples":610},{"eval":34,"avg_vel":0.46,"avg_compress":0.717,"J":0.614222,"dur":5.85,"samples":595},{"eval":35,"avg_vel":0.479,"avg_compress":0.662,"J":0.580189,"dur":5.4,"samples":550},{"eval":36,"avg_vel":0.387,"avg_compress":0.697,"J":0.597731,"dur":5.65,"samples":575},{"eval":37,"avg_vel":0.44,"avg_compress":0.674,"J":0.585174,"dur":5.5,"samples":560},{"eval":38,"avg_vel":0.401,"avg_compress":0.731,"J":0.598148,"dur":5.95,"samples":604},{"eval":39,"avg_vel":0.381,"avg_compress":0.693,"J":0.588182,"dur":5.65,"samples":574},{"eval":40,"avg_vel":0.444,"avg_compress":0.712,"J":0.609624,"dur":5.8,"samples":590},{"eval":41,"avg_vel":0.498,"avg_compress":0.653,"J":0.575543,"dur":5.3,"samples":540},{"eval":42,"avg_vel":0.479,"avg_compress":0.637,"J":0.569949,"dur":5.2,"samples":530},{"eval":43,"avg_vel":0.347,"avg_compress":0.685,"J":0.580956,"dur":5.55,"samples":565},{"eval":44,"avg_vel":0.559,"avg_compress":0.692,"J":0.590503,"dur":5.65,"samples":575},{"eval":45,"avg_vel":0.428,"avg_compress":0.654,"J":0.569519,"dur":5.3,"samples":540},{"eval":46,"avg_vel":0.485,"avg_compress":0.704,"J":0.586983,"dur":5.7,"samples":580},{"eval":47,"avg_vel":0.598,"avg_compress":0.671,"J":0.597263,"dur":5.45,"samples":555},{"eval":48,"avg_vel":0.528,"avg_compress":0.659,"J":0.580156,"dur":5.35,"samples":545},{"eval":49,"avg_vel":0.483,"avg_compress":0.669,"J":0.58494,"dur":5.45,"samples":555},{"eval":50,"avg_vel":0.469,"avg_compress":0.677,"J":0.587674,"dur":5.5,"samples":560},{"eval":51,"avg_vel":0.428,"avg_compress":0.636,"J":0.566565,"dur":5.15,"samples":525},{"eval":52,"avg_vel":0.45,"avg_compress":0.683,"J":0.590114,"dur":5.55,"samples":565},{"eval":53,"avg_vel":0.468,"avg_compress":0.647,"J":0.581167,"dur":5.25,"samples":535},{"eval":54,"avg_vel":0.428,"avg_compress":0.638,"J":0.571644,"dur":5.2,"samples":530},{"eval":55,"avg_vel":0.362,"avg_compress":0.691,"J":0.585201,"dur":5.6,"samples":570},{"eval":56,"avg_vel":0.537,"avg_compress":0.674,"J":0.587127,"dur":5.5,"samples":560},{"eval":57,"avg_vel":0.423,"avg_compress":0.703,"J":0.585591,"dur":5.7,"samples":580},{"eval":58,"avg_vel":0.532,"avg_compress":0.663,"J":0.579071,"dur":5.4,"samples":550},{"eval":59,"avg_vel":0.452,"avg_compress":0.654,"J":0.57571,"dur":5.3,"samples":540},{"eval":60,"avg_vel":0.479,"avg_compress":0.633,"J":0.573189,"dur":5.15,"samples":525}],"run3":[{"eval":1,"avg_vel":0.657,"avg_compress":0.7,"J":0.588195,"dur":5.7,"samples":580},{"eval":2,"avg_vel":0.536,"avg_compress":0.852,"J":0.802434,"dur":6.9,"samples":700},{"eval":3,"avg_vel":0.655,"avg_compress":0.73,"J":0.624489,"dur":5.95,"samples":605},{"eval":4,"avg_vel":0.532,"avg_compress":0.733,"J":0.606139,"dur":5.95,"samples":605},{"eval":5,"avg_vel":0.68,"avg_compress":0.676,"J":0.631379,"dur":5.5,"samples":560},{"eval":6,"avg_vel":0.507,"avg_compress":0.749,"J":0.725565,"dur":6.1,"samples":620},{"eval":7,"avg_vel":0.661,"avg_compress":0.711,"J":0.677956,"dur":5.8,"samples":590},{"eval":9,"avg_vel":0.573,"avg_compress":0.673,"J":0.585659,"dur":5.45,"samples":555},{"eval":10,"avg_vel":0.504,"avg_compress":0.767,"J":0.636996,"dur":6.25,"samples":635},{"eval":11,"avg_vel":0.531,"avg_compress":0.718,"J":0.602148,"dur":5.85,"samples":595},{"eval":12,"avg_vel":0.529,"avg_compress":0.689,"J":0.5849,"dur":5.6,"samples":570},{"eval":13,"avg_vel":0.635,"avg_compress":0.701,"J":0.593902,"dur":5.7,"samples":580},{"eval":14,"avg_vel":0.704,"avg_compress":0.719,"J":0.664053,"dur":5.85,"samples":595},{"eval":15,"avg_vel":0.547,"avg_compress":0.584,"J":0.55114,"dur":4.75,"samples":485},{"eval":16,"avg_vel":0.564,"avg_compress":0.699,"J":0.834493,"dur":5.7,"samples":580},{"eval":18,"avg_vel":0.437,"avg_compress":0.736,"J":0.602154,"dur":6.0,"samples":610},{"eval":19,"avg_vel":0.613,"avg_compress":0.612,"J":0.561639,"dur":5.0,"samples":510},{"eval":21,"avg_vel":0.646,"avg_compress":0.586,"J":0.551408,"dur":4.75,"samples":485},{"eval":22,"avg_vel":0.285,"avg_compress":0.765,"J":0.666624,"dur":6.2,"samples":630},{"eval":23,"avg_vel":0.583,"avg_compress":0.653,"J":0.576021,"dur":5.3,"samples":540},{"eval":24,"avg_vel":0.641,"avg_compress":0.614,"J":0.558868,"dur":5.0,"samples":510},{"eval":25,"avg_vel":0.622,"avg_compress":0.578,"J":0.571641,"dur":4.7,"samples":480},{"eval":26,"avg_vel":0.714,"avg_compress":0.638,"J":0.576591,"dur":5.2,"samples":530},{"eval":27,"avg_vel":0.548,"avg_compress":0.664,"J":0.574965,"dur":5.4,"samples":550},{"eval":28,"avg_vel":0.493,"avg_compress":0.647,"J":0.581948,"dur":5.25,"samples":535},{"eval":29,"avg_vel":0.515,"avg_compress":0.565,"J":0.548318,"dur":4.6,"samples":470},{"eval":30,"avg_vel":0.561,"avg_compress":0.579,"J":0.547838,"dur":4.7,"samples":480},{"eval":31,"avg_vel":0.559,"avg_compress":0.617,"J":0.56608,"dur":5.0,"samples":510},{"eval":32,"avg_vel":0.695,"avg_compress":0.621,"J":0.578021,"dur":5.05,"samples":515},{"eval":33,"avg_vel":0.545,"avg_compress":0.601,"J":0.559108,"dur":4.9,"samples":500},{"eval":34,"avg_vel":0.495,"avg_compress":0.584,"J":0.55096,"dur":4.75,"samples":485},{"eval":35,"avg_vel":0.535,"avg_compress":0.58,"J":0.544651,"dur":4.7,"samples":480},{"eval":36,"avg_vel":0.571,"avg_compress":0.585,"J":0.562375,"dur":4.75,"samples":485},{"eval":37,"avg_vel":0.622,"avg_compress":0.585,"J":0.559147,"dur":4.75,"samples":485},{"eval":38,"avg_vel":0.572,"avg_compress":0.637,"J":0.56579,"dur":5.2,"samples":530},{"eval":39,"avg_vel":0.52,"avg_compress":0.566,"J":0.538564,"dur":4.6,"samples":470},{"eval":40,"avg_vel":0.492,"avg_compress":0.555,"J":0.541132,"dur":4.5,"samples":460},{"eval":41,"avg_vel":0.537,"avg_compress":0.615,"J":0.564089,"dur":5.0,"samples":510},{"eval":42,"avg_vel":0.567,"avg_compress":0.58,"J":0.554494,"dur":4.7,"samples":480},{"eval":43,"avg_vel":0.568,"avg_compress":0.555,"J":0.553886,"dur":4.5,"samples":460},{"eval":44,"avg_vel":0.511,"avg_compress":0.608,"J":0.563125,"dur":4.95,"samples":505},{"eval":45,"avg_vel":0.495,"avg_compress":0.555,"J":0.539474,"dur":4.5,"samples":460},{"eval":46,"avg_vel":0.49,"avg_compress":0.55,"J":0.533466,"dur":4.45,"samples":455},{"eval":47,"avg_vel":0.513,"avg_compress":0.57,"J":0.545715,"dur":4.65,"samples":475},{"eval":48,"avg_vel":0.591,"avg_compress":0.588,"J":0.555533,"dur":4.8,"samples":490},{"eval":49,"avg_vel":0.582,"avg_compress":0.545,"J":0.546724,"dur":4.45,"samples":455},{"eval":50,"avg_vel":0.514,"avg_compress":0.57,"J":0.543094,"dur":4.65,"samples":475},{"eval":51,"avg_vel":0.512,"avg_compress":0.561,"J":0.538939,"dur":4.55,"samples":465},{"eval":52,"avg_vel":0.464,"avg_compress":0.551,"J":0.53708,"dur":4.5,"samples":460},{"eval":53,"avg_vel":0.504,"avg_compress":0.561,"J":0.542863,"dur":4.55,"samples":465},{"eval":54,"avg_vel":0.527,"avg_compress":0.544,"J":0.545572,"dur":4.45,"samples":455},{"eval":55,"avg_vel":0.534,"avg_compress":0.552,"J":0.5469,"dur":4.5,"samples":460},{"eval":56,"avg_vel":0.532,"avg_compress":0.562,"J":0.539929,"dur":4.6,"samples":469},{"eval":57,"avg_vel":0.481,"avg_compress":0.551,"J":0.542653,"dur":4.5,"samples":460},{"eval":58,"avg_vel":0.514,"avg_compress":0.544,"J":0.535951,"dur":4.45,"samples":455},{"eval":59,"avg_vel":0.497,"avg_compress":0.557,"J":0.538759,"dur":4.55,"samples":465},{"eval":60,"avg_vel":0.477,"avg_compress":0.55,"J":0.536927,"dur":4.5,"samples":460}]}</script>
 <script>
-const DATA = {"algorithm": "QPSO", "path": "Path 2 (I\u2192^)", "runs": {"run1": {"best_J": 0.547637, "evals": [{"eval": 1, "avg_vel": 0.457, "avg_compress": 0.803, "J": 0.627657, "dur": 6.55, "samples": 665}, {"eval": 3, "avg_vel": 0.329, "avg_compress": 0.8, "J": 0.864682, "dur": 6.5, "samples": 660}, {"eval": 4, "avg_vel": 0.655, "avg_compress": 0.629, "J": 0.811851, "dur": 5.1, "samples": 520}, {"eval": 5, "avg_vel": 0.565, "avg_compress": 0.837, "J": 0.645811, "dur": 6.8, "samples": 690}, {"eval": 6, "avg_vel": 0.399, "avg_compress": 0.723, "J": 0.593285, "dur": 5.9, "samples": 599}, {"eval": 8, "avg_vel": 0.532, "avg_compress": 0.737, "J": 0.604026, "dur": 6.0, "samples": 610}, {"eval": 9, "avg_vel": 0.37, "avg_compress": 0.783, "J": 0.631348, "dur": 6.35, "samples": 645}, {"eval": 10, "avg_vel": 0.401, "avg_compress": 0.624, "J": 0.768028, "dur": 5.05, "samples": 515}, {"eval": 11, "avg_vel": 0.67, "avg_compress": 0.748, "J": 0.617026, "dur": 6.1, "samples": 620}, {"eval": 12, "avg_vel": 0.457, "avg_compress": 0.793, "J": 0.645538, "dur": 6.45, "samples": 655}, {"eval": 13, "avg_vel": 0.355, "avg_compress": 0.709, "J": 0.59781, "dur": 5.75, "samples": 585}, {"eval": 14, "avg_vel": 0.386, "avg_compress": 0.69, "J": 0.582102, "dur": 5.6, "samples": 570}, {"eval": 15, "avg_vel": 0.374, "avg_compress": 0.682, "J": 0.58357, "dur": 5.55, "samples": 565}, {"eval": 16, "avg_vel": 0.345, "avg_compress": 0.747, "J": 0.847701, "dur": 6.05, "samples": 615}, {"eval": 17, "avg_vel": 0.616, "avg_compress": 0.739, "J": 0.654098, "dur": 6.0, "samples": 610}, {"eval": 18, "avg_vel": 0.45, "avg_compress": 0.706, "J": 0.591137, "dur": 5.75, "samples": 585}, {"eval": 19, "avg_vel": 0.339, "avg_compress": 0.665, "J": 0.578008, "dur": 5.4, "samples": 550}, {"eval": 20, "avg_vel": 0.463, "avg_compress": 0.677, "J": 0.579723, "dur": 5.5, "samples": 560}, {"eval": 21, "avg_vel": 0.434, "avg_compress": 0.671, "J": 0.578019, "dur": 5.45, "samples": 555}, {"eval": 22, "avg_vel": 0.327, "avg_compress": 0.668, "J": 0.575554, "dur": 5.45, "samples": 555}, {"eval": 23, "avg_vel": 0.545, "avg_compress": 0.726, "J": 0.632452, "dur": 5.9, "samples": 600}, {"eval": 24, "avg_vel": 0.397, "avg_compress": 0.706, "J": 0.586, "dur": 5.75, "samples": 585}, {"eval": 25, "avg_vel": 0.353, "avg_compress": 0.632, "J": 0.566934, "dur": 5.15, "samples": 525}, {"eval": 26, "avg_vel": 0.388, "avg_compress": 0.686, "J": 0.583064, "dur": 5.6, "samples": 570}, {"eval": 27, "avg_vel": 0.474, "avg_compress": 0.7, "J": 0.581439, "dur": 5.7, "samples": 580}, {"eval": 28, "avg_vel": 0.325, "avg_compress": 0.735, "J": 0.610842, "dur": 6.0, "samples": 610}, {"eval": 29, "avg_vel": 0.396, "avg_compress": 0.68, "J": 0.6036, "dur": 5.55, "samples": 565}, {"eval": 30, "avg_vel": 0.343, "avg_compress": 0.613, "J": 0.562063, "dur": 5.0, "samples": 510}, {"eval": 31, "avg_vel": 0.397, "avg_compress": 0.691, "J": 0.580598, "dur": 5.6, "samples": 569}, {"eval": 32, "avg_vel": 0.385, "avg_compress": 0.623, "J": 0.559087, "dur": 5.05, "samples": 515}, {"eval": 33, "avg_vel": 0.482, "avg_compress": 0.659, "J": 0.570702, "dur": 5.35, "samples": 545}, {"eval": 34, "avg_vel": 0.252, "avg_compress": 0.626, "J": 0.56138, "dur": 5.1, "samples": 520}, {"eval": 35, "avg_vel": 0.569, "avg_compress": 0.638, "J": 0.63572, "dur": 5.2, "samples": 530}, {"eval": 36, "avg_vel": 0.368, "avg_compress": 0.63, "J": 0.568815, "dur": 5.1, "samples": 520}, {"eval": 37, "avg_vel": 0.364, "avg_compress": 0.643, "J": 0.57432, "dur": 5.25, "samples": 535}, {"eval": 38, "avg_vel": 0.336, "avg_compress": 0.638, "J": 0.566276, "dur": 5.2, "samples": 530}, {"eval": 39, "avg_vel": 0.48, "avg_compress": 0.661, "J": 0.573706, "dur": 5.4, "samples": 550}, {"eval": 40, "avg_vel": 0.329, "avg_compress": 0.622, "J": 0.560396, "dur": 5.05, "samples": 515}, {"eval": 41, "avg_vel": 0.399, "avg_compress": 0.656, "J": 0.572836, "dur": 5.35, "samples": 545}, {"eval": 42, "avg_vel": 0.32, "avg_compress": 0.625, "J": 0.562185, "dur": 5.1, "samples": 520}, {"eval": 43, "avg_vel": 0.358, "avg_compress": 0.653, "J": 0.570087, "dur": 5.3, "samples": 540}, {"eval": 44, "avg_vel": 0.418, "avg_compress": 0.612, "J": 0.562755, "dur": 5.0, "samples": 510}, {"eval": 45, "avg_vel": 0.465, "avg_compress": 0.632, "J": 0.562126, "dur": 5.15, "samples": 525}, {"eval": 46, "avg_vel": 0.45, "avg_compress": 0.626, "J": 0.570667, "dur": 5.1, "samples": 520}, {"eval": 47, "avg_vel": 0.336, "avg_compress": 0.6, "J": 0.555715, "dur": 4.9, "samples": 500}, {"eval": 48, "avg_vel": 0.347, "avg_compress": 0.616, "J": 0.558602, "dur": 5.0, "samples": 510}, {"eval": 49, "avg_vel": 0.396, "avg_compress": 0.663, "J": 0.575687, "dur": 5.4, "samples": 550}, {"eval": 50, "avg_vel": 0.382, "avg_compress": 0.588, "J": 0.551649, "dur": 4.8, "samples": 490}, {"eval": 51, "avg_vel": 0.446, "avg_compress": 0.638, "J": 0.566894, "dur": 5.2, "samples": 530}, {"eval": 52, "avg_vel": 0.402, "avg_compress": 0.617, "J": 0.559369, "dur": 5.0, "samples": 510}, {"eval": 53, "avg_vel": 0.319, "avg_compress": 0.613, "J": 0.5628, "dur": 5.0, "samples": 509}, {"eval": 54, "avg_vel": 0.313, "avg_compress": 0.608, "J": 0.555196, "dur": 4.95, "samples": 505}, {"eval": 55, "avg_vel": 0.325, "avg_compress": 0.584, "J": 0.547637, "dur": 4.75, "samples": 485}, {"eval": 56, "avg_vel": 0.383, "avg_compress": 0.588, "J": 0.550424, "dur": 4.8, "samples": 490}, {"eval": 57, "avg_vel": 0.38, "avg_compress": 0.621, "J": 0.560265, "dur": 5.05, "samples": 515}, {"eval": 58, "avg_vel": 0.369, "avg_compress": 0.601, "J": 0.556789, "dur": 4.9, "samples": 500}, {"eval": 59, "avg_vel": 0.322, "avg_compress": 0.611, "J": 0.567018, "dur": 4.95, "samples": 505}, {"eval": 60, "avg_vel": 0.31, "avg_compress": 0.6, "J": 0.554816, "dur": 4.9, "samples": 500}]}, "run2": {"best_J": 0.566565, "evals": [{"eval": 1, "avg_vel": 0.55, "avg_compress": 0.804, "J": 0.796692, "dur": 14.0, "samples": 1410}, {"eval": 2, "avg_vel": 0.555, "avg_compress": 0.822, "J": 0.747471, "dur": 6.65, "samples": 675}, {"eval": 3, "avg_vel": 0.575, "avg_compress": 0.753, "J": 0.726641, "dur": 6.1, "samples": 620}, {"eval": 5, "avg_vel": 0.601, "avg_compress": 0.699, "J": 0.617165, "dur": 5.7, "samples": 581}, {"eval": 6, "avg_vel": 0.412, "avg_compress": 0.702, "J": 0.603611, "dur": 5.7, "samples": 580}, {"eval": 7, "avg_vel": 0.433, "avg_compress": 0.687, "J": 0.59894, "dur": 5.6, "samples": 570}, {"eval": 8, "avg_vel": 0.408, "avg_compress": 0.732, "J": 0.817691, "dur": 5.95, "samples": 605}, {"eval": 9, "avg_vel": 0.383, "avg_compress": 0.734, "J": 0.598772, "dur": 5.95, "samples": 605}, {"eval": 10, "avg_vel": 0.578, "avg_compress": 0.656, "J": 0.697294, "dur": 5.35, "samples": 545}, {"eval": 11, "avg_vel": 0.484, "avg_compress": 0.699, "J": 0.60267, "dur": 5.7, "samples": 580}, {"eval": 12, "avg_vel": 0.507, "avg_compress": 0.821, "J": 0.662258, "dur": 6.65, "samples": 675}, {"eval": 13, "avg_vel": 0.454, "avg_compress": 0.701, "J": 0.643441, "dur": 5.7, "samples": 580}, {"eval": 14, "avg_vel": 0.391, "avg_compress": 0.719, "J": 0.596041, "dur": 5.85, "samples": 595}, {"eval": 15, "avg_vel": 0.326, "avg_compress": 0.738, "J": 0.608443, "dur": 6.0, "samples": 610}, {"eval": 16, "avg_vel": 0.532, "avg_compress": 0.725, "J": 0.842041, "dur": 5.9, "samples": 600}, {"eval": 17, "avg_vel": 0.316, "avg_compress": 0.74, "J": 0.639307, "dur": 6.0, "samples": 610}, {"eval": 18, "avg_vel": 0.373, "avg_compress": 0.736, "J": 0.615293, "dur": 6.0, "samples": 610}, {"eval": 19, "avg_vel": 0.374, "avg_compress": 0.746, "J": 0.607318, "dur": 6.05, "samples": 615}, {"eval": 20, "avg_vel": 0.358, "avg_compress": 0.798, "J": 0.772255, "dur": 6.5, "samples": 660}, {"eval": 21, "avg_vel": 0.385, "avg_compress": 0.724, "J": 0.592844, "dur": 5.9, "samples": 600}, {"eval": 22, "avg_vel": 0.544, "avg_compress": 0.662, "J": 0.605145, "dur": 5.4, "samples": 550}, {"eval": 23, "avg_vel": 0.493, "avg_compress": 0.716, "J": 0.605995, "dur": 5.8, "samples": 590}, {"eval": 24, "avg_vel": 0.36, "avg_compress": 0.709, "J": 0.613357, "dur": 5.75, "samples": 585}, {"eval": 25, "avg_vel": 0.518, "avg_compress": 0.686, "J": 0.593232, "dur": 5.6, "samples": 570}, {"eval": 26, "avg_vel": 0.397, "avg_compress": 0.719, "J": 0.610063, "dur": 5.85, "samples": 595}, {"eval": 27, "avg_vel": 0.444, "avg_compress": 0.72, "J": 0.600653, "dur": 5.85, "samples": 595}, {"eval": 28, "avg_vel": 0.467, "avg_compress": 0.692, "J": 0.589127, "dur": 5.65, "samples": 575}, {"eval": 29, "avg_vel": 0.522, "avg_compress": 0.775, "J": 0.624386, "dur": 6.3, "samples": 640}, {"eval": 30, "avg_vel": 0.412, "avg_compress": 0.777, "J": 0.663972, "dur": 6.3, "samples": 640}, {"eval": 31, "avg_vel": 0.437, "avg_compress": 0.678, "J": 0.586238, "dur": 5.5, "samples": 560}, {"eval": 32, "avg_vel": 0.418, "avg_compress": 0.75, "J": 0.602575, "dur": 6.1, "samples": 620}, {"eval": 33, "avg_vel": 0.376, "avg_compress": 0.741, "J": 0.598767, "dur": 6.0, "samples": 610}, {"eval": 34, "avg_vel": 0.46, "avg_compress": 0.717, "J": 0.614222, "dur": 5.85, "samples": 595}, {"eval": 35, "avg_vel": 0.479, "avg_compress": 0.662, "J": 0.580189, "dur": 5.4, "samples": 550}, {"eval": 36, "avg_vel": 0.387, "avg_compress": 0.697, "J": 0.597731, "dur": 5.65, "samples": 575}, {"eval": 37, "avg_vel": 0.44, "avg_compress": 0.674, "J": 0.585174, "dur": 5.5, "samples": 560}, {"eval": 38, "avg_vel": 0.401, "avg_compress": 0.731, "J": 0.598148, "dur": 5.95, "samples": 604}, {"eval": 39, "avg_vel": 0.381, "avg_compress": 0.693, "J": 0.588182, "dur": 5.65, "samples": 574}, {"eval": 40, "avg_vel": 0.444, "avg_compress": 0.712, "J": 0.609624, "dur": 5.8, "samples": 590}, {"eval": 41, "avg_vel": 0.498, "avg_compress": 0.653, "J": 0.575543, "dur": 5.3, "samples": 540}, {"eval": 42, "avg_vel": 0.479, "avg_compress": 0.637, "J": 0.569949, "dur": 5.2, "samples": 530}, {"eval": 43, "avg_vel": 0.347, "avg_compress": 0.685, "J": 0.580956, "dur": 5.55, "samples": 565}, {"eval": 44, "avg_vel": 0.559, "avg_compress": 0.692, "J": 0.590503, "dur": 5.65, "samples": 575}, {"eval": 45, "avg_vel": 0.428, "avg_compress": 0.654, "J": 0.569519, "dur": 5.3, "samples": 540}, {"eval": 46, "avg_vel": 0.485, "avg_compress": 0.704, "J": 0.586983, "dur": 5.7, "samples": 580}, {"eval": 47, "avg_vel": 0.598, "avg_compress": 0.671, "J": 0.597263, "dur": 5.45, "samples": 555}, {"eval": 48, "avg_vel": 0.528, "avg_compress": 0.659, "J": 0.580156, "dur": 5.35, "samples": 545}, {"eval": 49, "avg_vel": 0.483, "avg_compress": 0.669, "J": 0.58494, "dur": 5.45, "samples": 555}, {"eval": 50, "avg_vel": 0.469, "avg_compress": 0.677, "J": 0.587674, "dur": 5.5, "samples": 560}, {"eval": 51, "avg_vel": 0.428, "avg_compress": 0.636, "J": 0.566565, "dur": 5.15, "samples": 525}, {"eval": 52, "avg_vel": 0.45, "avg_compress": 0.683, "J": 0.590114, "dur": 5.55, "samples": 565}, {"eval": 53, "avg_vel": 0.468, "avg_compress": 0.647, "J": 0.581167, "dur": 5.25, "samples": 535}, {"eval": 54, "avg_vel": 0.428, "avg_compress": 0.638, "J": 0.571644, "dur": 5.2, "samples": 530}, {"eval": 55, "avg_vel": 0.362, "avg_compress": 0.691, "J": 0.585201, "dur": 5.6, "samples": 570}, {"eval": 56, "avg_vel": 0.537, "avg_compress": 0.674, "J": 0.587127, "dur": 5.5, "samples": 560}, {"eval": 57, "avg_vel": 0.423, "avg_compress": 0.703, "J": 0.585591, "dur": 5.7, "samples": 580}, {"eval": 58, "avg_vel": 0.532, "avg_compress": 0.663, "J": 0.579071, "dur": 5.4, "samples": 550}, {"eval": 59, "avg_vel": 0.452, "avg_compress": 0.654, "J": 0.57571, "dur": 5.3, "samples": 540}, {"eval": 60, "avg_vel": 0.479, "avg_compress": 0.633, "J": 0.573189, "dur": 5.15, "samples": 525}]}, "run3": {"best_J": 0.533466, "evals": [{"eval": 1, "avg_vel": 0.657, "avg_compress": 0.7, "J": 0.588195, "dur": 5.7, "samples": 580}, {"eval": 2, "avg_vel": 0.536, "avg_compress": 0.852, "J": 0.802434, "dur": 6.9, "samples": 700}, {"eval": 3, "avg_vel": 0.655, "avg_compress": 0.73, "J": 0.624489, "dur": 5.95, "samples": 605}, {"eval": 4, "avg_vel": 0.532, "avg_compress": 0.733, "J": 0.606139, "dur": 5.95, "samples": 605}, {"eval": 5, "avg_vel": 0.68, "avg_compress": 0.676, "J": 0.631379, "dur": 5.5, "samples": 560}, {"eval": 6, "avg_vel": 0.507, "avg_compress": 0.749, "J": 0.725565, "dur": 6.1, "samples": 620}, {"eval": 7, "avg_vel": 0.661, "avg_compress": 0.711, "J": 0.677956, "dur": 5.8, "samples": 590}, {"eval": 9, "avg_vel": 0.573, "avg_compress": 0.673, "J": 0.585659, "dur": 5.45, "samples": 555}, {"eval": 10, "avg_vel": 0.504, "avg_compress": 0.767, "J": 0.636996, "dur": 6.25, "samples": 635}, {"eval": 11, "avg_vel": 0.531, "avg_compress": 0.718, "J": 0.602148, "dur": 5.85, "samples": 595}, {"eval": 12, "avg_vel": 0.529, "avg_compress": 0.689, "J": 0.5849, "dur": 5.6, "samples": 570}, {"eval": 13, "avg_vel": 0.635, "avg_compress": 0.701, "J": 0.593902, "dur": 5.7, "samples": 580}, {"eval": 14, "avg_vel": 0.704, "avg_compress": 0.719, "J": 0.664053, "dur": 5.85, "samples": 595}, {"eval": 15, "avg_vel": 0.547, "avg_compress": 0.584, "J": 0.55114, "dur": 4.75, "samples": 485}, {"eval": 16, "avg_vel": 0.564, "avg_compress": 0.699, "J": 0.834493, "dur": 5.7, "samples": 580}, {"eval": 18, "avg_vel": 0.437, "avg_compress": 0.736, "J": 0.602154, "dur": 6.0, "samples": 610}, {"eval": 19, "avg_vel": 0.613, "avg_compress": 0.612, "J": 0.561639, "dur": 5.0, "samples": 510}, {"eval": 21, "avg_vel": 0.646, "avg_compress": 0.586, "J": 0.551408, "dur": 4.75, "samples": 485}, {"eval": 22, "avg_vel": 0.285, "avg_compress": 0.765, "J": 0.666624, "dur": 6.2, "samples": 630}, {"eval": 23, "avg_vel": 0.583, "avg_compress": 0.653, "J": 0.576021, "dur": 5.3, "samples": 540}, {"eval": 24, "avg_vel": 0.641, "avg_compress": 0.614, "J": 0.558868, "dur": 5.0, "samples": 510}, {"eval": 25, "avg_vel": 0.622, "avg_compress": 0.578, "J": 0.571641, "dur": 4.7, "samples": 480}, {"eval": 26, "avg_vel": 0.714, "avg_compress": 0.638, "J": 0.576591, "dur": 5.2, "samples": 530}, {"eval": 27, "avg_vel": 0.548, "avg_compress": 0.664, "J": 0.574965, "dur": 5.4, "samples": 550}, {"eval": 28, "avg_vel": 0.493, "avg_compress": 0.647, "J": 0.581948, "dur": 5.25, "samples": 535}, {"eval": 29, "avg_vel": 0.515, "avg_compress": 0.565, "J": 0.548318, "dur": 4.6, "samples": 470}, {"eval": 30, "avg_vel": 0.561, "avg_compress": 0.579, "J": 0.547838, "dur": 4.7, "samples": 480}, {"eval": 31, "avg_vel": 0.559, "avg_compress": 0.617, "J": 0.56608, "dur": 5.0, "samples": 510}, {"eval": 32, "avg_vel": 0.695, "avg_compress": 0.621, "J": 0.578021, "dur": 5.05, "samples": 515}, {"eval": 33, "avg_vel": 0.545, "avg_compress": 0.601, "J": 0.559108, "dur": 4.9, "samples": 500}, {"eval": 34, "avg_vel": 0.495, "avg_compress": 0.584, "J": 0.55096, "dur": 4.75, "samples": 485}, {"eval": 35, "avg_vel": 0.535, "avg_compress": 0.58, "J": 0.544651, "dur": 4.7, "samples": 480}, {"eval": 36, "avg_vel": 0.571, "avg_compress": 0.585, "J": 0.562375, "dur": 4.75, "samples": 485}, {"eval": 37, "avg_vel": 0.622, "avg_compress": 0.585, "J": 0.559147, "dur": 4.75, "samples": 485}, {"eval": 38, "avg_vel": 0.572, "avg_compress": 0.637, "J": 0.56579, "dur": 5.2, "samples": 530}, {"eval": 39, "avg_vel": 0.52, "avg_compress": 0.566, "J": 0.538564, "dur": 4.6, "samples": 470}, {"eval": 40, "avg_vel": 0.492, "avg_compress": 0.555, "J": 0.541132, "dur": 4.5, "samples": 460}, {"eval": 41, "avg_vel": 0.537, "avg_compress": 0.615, "J": 0.564089, "dur": 5.0, "samples": 510}, {"eval": 42, "avg_vel": 0.567, "avg_compress": 0.58, "J": 0.554494, "dur": 4.7, "samples": 480}, {"eval": 43, "avg_vel": 0.568, "avg_compress": 0.555, "J": 0.553886, "dur": 4.5, "samples": 460}, {"eval": 44, "avg_vel": 0.511, "avg_compress": 0.608, "J": 0.563125, "dur": 4.95, "samples": 505}, {"eval": 45, "avg_vel": 0.495, "avg_compress": 0.555, "J": 0.539474, "dur": 4.5, "samples": 460}, {"eval": 46, "avg_vel": 0.49, "avg_compress": 0.55, "J": 0.533466, "dur": 4.45, "samples": 455}, {"eval": 47, "avg_vel": 0.513, "avg_compress": 0.57, "J": 0.545715, "dur": 4.65, "samples": 475}, {"eval": 48, "avg_vel": 0.591, "avg_compress": 0.588, "J": 0.555533, "dur": 4.8, "samples": 490}, {"eval": 49, "avg_vel": 0.582, "avg_compress": 0.545, "J": 0.546724, "dur": 4.45, "samples": 455}, {"eval": 50, "avg_vel": 0.514, "avg_compress": 0.57, "J": 0.543094, "dur": 4.65, "samples": 475}, {"eval": 51, "avg_vel": 0.512, "avg_compress": 0.561, "J": 0.538939, "dur": 4.55, "samples": 465}, {"eval": 52, "avg_vel": 0.464, "avg_compress": 0.551, "J": 0.53708, "dur": 4.5, "samples": 460}, {"eval": 53, "avg_vel": 0.504, "avg_compress": 0.561, "J": 0.542863, "dur": 4.55, "samples": 465}, {"eval": 54, "avg_vel": 0.527, "avg_compress": 0.544, "J": 0.545572, "dur": 4.45, "samples": 455}, {"eval": 55, "avg_vel": 0.534, "avg_compress": 0.552, "J": 0.5469, "dur": 4.5, "samples": 460}, {"eval": 56, "avg_vel": 0.532, "avg_compress": 0.562, "J": 0.539929, "dur": 4.6, "samples": 469}, {"eval": 57, "avg_vel": 0.481, "avg_compress": 0.551, "J": 0.542653, "dur": 4.5, "samples": 460}, {"eval": 58, "avg_vel": 0.514, "avg_compress": 0.544, "J": 0.535951, "dur": 4.45, "samples": 455}, {"eval": 59, "avg_vel": 0.497, "avg_compress": 0.557, "J": 0.538759, "dur": 4.55, "samples": 465}, {"eval": 60, "avg_vel": 0.477, "avg_compress": 0.55, "J": 0.536927, "dur": 4.5, "samples": 460}]}}};
-const MODE = "eval"; // "full" or "eval"
-const runIds = Object.keys(DATA.runs);
-let currentRun = runIds[0];
+  const DATA = JSON.parse(document.getElementById('data-json').textContent);
+  const RUN_KEYS = ['run1', 'run2', 'run3'];
+  const RUN_LABELS = { run1: 'Run 1', run2: 'Run 2', run3: 'Run 3' };
+  const RUN_IMPROVEMENT = { run1: 18.64, run2: 15.83, run3: 20.74 };
+  const RUN_OUTLIER = { run1: true, run2: false, run3: false };
 
-function renderSwitcher() {
-  const el = document.getElementById('runSwitcher');
-  el.innerHTML = '';
-  runIds.forEach((rid, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'run-btn' + (rid === currentRun ? ' active' : '');
-    btn.textContent = `Run ${i+1} (best J=${DATA.runs[rid].best_J.toFixed(6)})`;
-    btn.onclick = () => { currentRun = rid; renderSwitcher(); renderTable(); };
-    el.appendChild(btn);
-  });
-}
+  function bestEval(evals) { return evals.reduce((a, b) => (b.J < a.J ? b : a), evals[0]); }
+  function fmt(n, d) { return Number(n).toFixed(d); }
 
-function renderTable() {
-  const head = document.getElementById('tableHead');
-  const body = document.getElementById('tableBody');
-  const evals = DATA.runs[currentRun].evals;
-  const bestJ = Math.min(...evals.map(e => e.J));
-
-  if (MODE === 'full') {
-    head.innerHTML = '<th>Eval</th><th>J</th><th>Duration (s)</th><th>Samples</th>';
-  } else {
-    head.innerHTML = '<th>Eval</th><th>Avg Vel</th><th>Avg Compress</th><th>J</th><th>Duration (s)</th><th>Samples</th>';
+  function buildRunSwitcher() {
+    const el = document.getElementById('runSwitcher');
+    el.innerHTML = RUN_KEYS.map((key, i) => {
+      const evals = DATA[key];
+      const best = bestEval(evals);
+      return `
+        <button class="run-card${i === 0 ? ' active' : ''}${RUN_OUTLIER[key] ? ' outlier' : ''}" data-run="${key}" role="tab" aria-selected="${i === 0}">
+          <div class="label"><span>${RUN_LABELS[key]}</span><span class="pill">${RUN_IMPROVEMENT[key]}% ↓</span></div>
+          <div class="stat-row"><span class="val mono">${fmt(best.J, 6)}</span><span class="improve">best J</span></div>
+          <div class="sub-stats"><span><b>eval</b> #${best.eval}</span><span><b>dur</b> ${fmt(best.dur, 2)}s</span><span><b>samples</b> ${best.samples}</span></div>
+        </button>`;
+    }).join('');
+    el.querySelectorAll('.run-card').forEach(btn => btn.addEventListener('click', () => switchRun(btn.dataset.run)));
   }
 
-  body.innerHTML = '';
-  evals.forEach(ev => {
-    const tr = document.createElement('tr');
-    tr.className = 'eval-row' + (ev.J === bestJ ? ' best' : '');
-    const bestBadge = ev.J === bestJ ? '<span class="best-badge">Best</span>' : '';
-    if (MODE === 'full') {
-      tr.innerHTML = `<td>${ev.eval}${bestBadge}</td><td>${ev.J.toFixed(6)}</td><td>${ev.dur.toFixed(2)}</td><td>${ev.samples}</td>`;
-      tr.onclick = () => toggleDetail(ev.eval, tr);
-    } else {
-      tr.innerHTML = `<td>${ev.eval}${bestBadge}</td><td>${ev.avg_vel.toFixed(3)}</td><td>${ev.avg_compress.toFixed(3)}</td><td>${ev.J.toFixed(6)}</td><td>${ev.dur.toFixed(2)}</td><td>${ev.samples}</td>`;
-    }
-    body.appendChild(tr);
+  function buildTable(key) {
+    const evals = DATA[key];
+    const best = bestEval(evals);
+    let rows = '';
+    evals.forEach((ev, idx) => {
+      const isBest = ev.eval === best.eval;
+      const classes = [];
+      if (idx % 2 === 1) classes.push('eval-even');
+      if (isBest) classes.push('is-best');
+      rows += `<tr class="${classes.join(' ')}" data-eval="${ev.eval}">
+        <td class="eval-cell mono">#${ev.eval}${isBest ? '<span class="best-tag">Best</span>' : ''}</td>
+        <td class="mono">${fmt(ev.avg_vel, 3)}</td>
+        <td class="mono">${fmt(ev.avg_compress, 3)}</td>
+        <td class="mono">${fmt(ev.J, 6)}</td>
+        <td class="mono">${fmt(ev.dur, 2)}s</td>
+        <td class="mono">${ev.samples}</td>
+      </tr>`;
+    });
+    return `<div class="table-wrap"><table>
+      <thead><tr><th>Eval</th><th>Avg Vel</th><th>Avg Compress</th><th>J</th><th>Dur</th><th>Samples</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table></div>`;
+  }
 
-    if (MODE === 'full') {
-      const detailRow = document.createElement('tr');
-      detailRow.className = 'joint-detail';
-      detailRow.id = `detail-${ev.eval}`;
-      const cols = MODE === 'full' ? 4 : 6;
-      let jointRows = ev.joints.map(j => `
-        <tr>
-          <td>${j.joint}</td>
-          <td>${j.vel.toFixed(3)}</td>
-          <td>${j.accel.toFixed(3)}</td>
-          <td>${j.compress.toFixed(3)}</td>
-          <td>${j.offset >= 0 ? '+' : ''}${j.offset.toFixed(3)}</td>
-          <td>${j.weight.toFixed(3)}</td>
-        </tr>`).join('');
-      detailRow.innerHTML = `<td colspan="${cols}">
-        <table class="joint-table">
-          <thead><tr><th>Joint</th><th>vel</th><th>accel</th><th>compress</th><th>offset</th><th>weight</th></tr></thead>
-          <tbody>${jointRows}</tbody>
-        </table>
-      </td>`;
-      body.appendChild(detailRow);
-    }
-  });
-}
+  function buildViews() {
+    const el = document.getElementById('views');
+    el.innerHTML = RUN_KEYS.map((key, i) => `<div class="view${i === 0 ? ' active' : ''}" id="view-${key}">${buildTable(key)}</div>`).join('');
+  }
 
-function toggleDetail(evalNum, tr) {
-  const d = document.getElementById(`detail-${evalNum}`);
-  if (d) d.classList.toggle('open');
-}
+  let currentRun = 'run1';
+  function switchRun(key) {
+    currentRun = key;
+    document.querySelectorAll('.run-card').forEach(btn => {
+      const active = btn.dataset.run === key;
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-selected', String(active));
+    });
+    document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === `view-${key}`));
+    document.getElementById('filterInput').value = '';
+    applyFilter();
+  }
 
-renderSwitcher();
-renderTable();
+  function applyFilter() {
+    const q = document.getElementById('filterInput').value.trim().toLowerCase();
+    const view = document.getElementById(`view-${currentRun}`);
+    const rows = view.querySelectorAll('tbody tr');
+    let shown = 0;
+    rows.forEach(r => {
+      const ev = r.dataset.eval;
+      const show = !q || ev.includes(q) || (`#${ev}`).includes(q);
+      r.classList.toggle('hidden-row', !show);
+      if (show) shown++;
+    });
+    document.getElementById('rowCount').textContent = `${shown} of ${DATA[currentRun].length} evals shown`;
+  }
+
+  buildRunSwitcher();
+  buildViews();
+  applyFilter();
+  document.getElementById('filterInput').addEventListener('input', applyFilter);
 </script>
