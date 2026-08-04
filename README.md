@@ -84,12 +84,21 @@ src/
 │   pso_optimizer.py, qpso_optimizer.py   Four optimizers, identically structured
 ├── energy_objective.py                   Shared objective function and AHP weights
 ├── baseline_trajectory.py                Non-optimized reference trajectory
-└── obstacle_avoidance/
-    ├── scan_obstacles_from_cameras.py    Camera-based obstacle detection
-    ├── add_obstacles_to_planning_scene.py Registers known obstacles for planning
-    ├── plan_obstacle_avoiding_path.py    Obstacle-aware planning and execution
-    ├── obstacle_avoidance_pipeline.py    End-to-end detect → plan → execute
-    └── find_scan_pose.py                 Utility: finds a camera pose for scanning
+├── obstacle_avoidance/
+│   ├── scan_obstacles_from_cameras.py    Camera-based obstacle detection
+│   ├── add_obstacles_to_planning_scene.py Registers known obstacles for planning
+│   ├── plan_obstacle_avoiding_path.py    Obstacle-aware planning and execution
+│   ├── obstacle_avoidance_pipeline.py    End-to-end detect → plan → execute
+│   └── find_scan_pose.py                 Utility: finds a camera pose for scanning
+└── validation/
+    ├── validate_dynamics_rnea.py         Independent Newton-Euler (RNEA) dynamics
+    │                                      check against Gazebo/DART's own logged
+    │                                      joint effort, per-joint and overall RMS
+    │                                      error, across baseline trajectories
+    └── replay_best_cmaes.py,             Re-executes each optimizer's stored best
+        replay_best_gwo.py,               parameter vector with no search loop, to
+        replay_best_pso.py                isolate simulation execution noise from
+                                           search-to-search variability
 
 results/                                  Per-evaluation result pages (see below)
 ```
