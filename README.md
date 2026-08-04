@@ -76,6 +76,12 @@ The logs each run was checked against are in `src/validation/logs/`:
 | Path 2 baseline | `path2_baseline_run1.csv` |
 | Cartesian lift, 0.7 m/s | `path3_vertical_lift_v0.7_run1.csv` |
 
+The link masses, inertia tensors, and joint origins the model is built
+from come from the resolved URDF rather than being hand-copied out of
+`ur_description`'s own config files — see
+`src/validation/reference/` for why, and for unmodified copies of those
+config files if you want to check the comparison yourself.
+
 ## Obstacle-aware perception and planning
 
 To move beyond optimizing a fixed, known trajectory, this part of the
@@ -122,9 +128,12 @@ src/
     │   replay_best_gwo.py,               parameter vector with no search loop, to
     │   replay_best_pso.py                isolate simulation execution noise from
     │                                     search-to-search variability
-    └── logs/                            The three trajectory logs used by
-                                          validate_dynamics_rnea.py (see Dynamics
-                                          validation below)
+    ├── logs/                            The three trajectory logs used by
+    │                                     validate_dynamics_rnea.py (see Dynamics
+    │                                     validation below)
+    └── reference/                       Unmodified UR10 config files from
+                                          ur_description, kept for comparison
+                                          against (BSD-3-Clause, see its README)
 
 results/                                  Per-evaluation result pages (see below)
 ```
