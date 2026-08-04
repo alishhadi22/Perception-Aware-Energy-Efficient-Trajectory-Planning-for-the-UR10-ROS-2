@@ -53,6 +53,29 @@ Each is run against two distinct trajectories (referred to as Path 1 and
 Path 2) and evaluated over three independent runs, all under a fixed
 evaluation budget so the comparison between algorithms is fair.
 
+## Dynamics validation
+
+The energy term relies on the joint torque Gazebo reports during
+simulation, so before trusting that value, the underlying dynamics model
+is checked independently. `validate_dynamics_rnea.py` implements the
+manipulator's Newton-Euler inverse dynamics from the UR10's own URDF (link
+masses, inertia tensors, joint origins), predicts the torque a logged
+trajectory should have produced, and compares it sample-by-sample against
+what Gazebo actually logged.
+
+The comparison runs on three independent trajectories — the two
+optimizer baselines and the Cartesian lift used for the hardware-trend
+check below — and lands at 1–14% RMS error across all of them, with the
+one outlier traced to actuator saturation (three joints pinned at their
+rated torque limit for part of the motion) rather than a modelling error.
+The logs each run was checked against are in `src/validation/logs/`:
+
+| Trajectory | Log |
+|---|---|
+| Path 1 baseline | `path1_baseline_run1.csv` |
+| Path 2 baseline | `path2_baseline_run1.csv` |
+| Cartesian lift, 0.7 m/s | `path3_vertical_lift_v0.7_run1.csv` |
+
 ## Obstacle-aware perception and planning
 
 To move beyond optimizing a fixed, known trajectory, this part of the
@@ -95,10 +118,13 @@ src/
     │                                      check against Gazebo/DART's own logged
     │                                      joint effort, per-joint and overall RMS
     │                                      error, across baseline trajectories
-    └── replay_best_cmaes.py,             Re-executes each optimizer's stored best
-        replay_best_gwo.py,               parameter vector with no search loop, to
-        replay_best_pso.py                isolate simulation execution noise from
-                                           search-to-search variability
+    ├── replay_best_cmaes.py,             Re-executes each optimizer's stored best
+    │   replay_best_gwo.py,               parameter vector with no search loop, to
+    │   replay_best_pso.py                isolate simulation execution noise from
+    │                                     search-to-search variability
+    └── logs/                            The three trajectory logs used by
+                                          validate_dynamics_rnea.py (see Dynamics
+                                          validation below)
 
 results/                                  Per-evaluation result pages (see below)
 ```
