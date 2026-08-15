@@ -116,25 +116,33 @@ def load_csv(filepath):
             data.append(entry)
     return data
 
-def compute_objective(filepath, verbose=True, t_ref=None):
+def compute_objective(filepath, verbose=True, t_ref=None, return_breakdown=False):
     """
     Compute J = wE*E + wT*T + wS*S + wR*R from a trajectory CSV.
-    
+
     Args:
         filepath: path to trajectory CSV
         verbose: print detailed results
         t_ref: override T_ref (for dynamic baseline)
-    
+        return_breakdown: if True, return a dict with the raw and normalized
+            per-term values and their weighted contributions, instead of the
+            scalar J. Default False preserves the original return type and
+            all existing call sites unchanged.
+
     Returns:
-        J value (float)
+        J value (float), or a breakdown dict if return_breakdown=True:
+        {
+          'J': float,
+          'E_raw': float, 'T_raw': float, 'S_raw': float, 'R_raw': float,
+          'E_norm': float, 'T_norm': float, 'S_norm': float, 'R_norm': float,
+          'E_weighted': float, 'T_weighted': float, 'S_weighted': float, 'R_weighted': float,
+        }
     """
-    global T_ref
-    if t_ref is not None:
-        T_ref = t_ref
+    effective_t_ref = t_ref if t_ref is not None else T_ref
 
     data = load_csv(filepath)
     if len(data) < 2:
-        return 1.0
+        return {'J': 1.0} if return_breakdown else 1.0
 
     E_raw = compute_energy(data)
     T_raw = compute_time(data)
@@ -142,7 +150,7 @@ def compute_objective(filepath, verbose=True, t_ref=None):
     R_raw = compute_risk(data)
 
     E_norm = normalize(E_raw, E_ref)
-    T_norm = normalize(T_raw, T_ref)
+    T_norm = normalize(T_raw, effective_t_ref)
     S_norm = normalize(S_raw, S_ref)
     R_norm = normalize(R_raw, R_ref)
 
@@ -165,6 +173,14 @@ def compute_objective(filepath, verbose=True, t_ref=None):
         print(f"  J = {J:.6f}  (lower is better)")
         print("=" * 55)
 
+    if return_breakdown:
+        return {
+            'J': J,
+            'E_raw': E_raw, 'T_raw': T_raw, 'S_raw': S_raw, 'R_raw': R_raw,
+            'E_norm': E_norm, 'T_norm': T_norm, 'S_norm': S_norm, 'R_norm': R_norm,
+            'E_weighted': W_E * E_norm, 'T_weighted': W_T * T_norm,
+            'S_weighted': W_S * S_norm, 'R_weighted': W_R * R_norm,
+        }
     return J
 
 
