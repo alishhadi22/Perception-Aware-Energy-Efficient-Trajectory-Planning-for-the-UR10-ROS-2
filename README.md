@@ -53,6 +53,35 @@ Each is run against two distinct trajectories (referred to as Path 1 and
 Path 2) and evaluated over three independent runs, all under a fixed
 evaluation budget so the comparison between algorithms is fair.
 
+## Dynamics validation
+
+The energy term relies on the joint torque Gazebo reports during
+simulation, so before trusting that value, the underlying dynamics model
+is checked independently. `validate_dynamics_rnea.py` implements the
+manipulator's Newton-Euler inverse dynamics from the UR10's own URDF (link
+masses, inertia tensors, joint origins), predicts the torque a logged
+trajectory should have produced, and compares it sample-by-sample against
+what Gazebo actually logged.
+
+The comparison runs on three independent trajectories — the two
+optimizer baselines and the Cartesian lift used for the hardware-trend
+check below — and lands at 1–14% RMS error across all of them, with the
+one outlier traced to actuator saturation (three joints pinned at their
+rated torque limit for part of the motion) rather than a modelling error.
+The logs each run was checked against are in `src/validation/logs/`:
+
+| Trajectory | Log |
+|---|---|
+| Path 1 baseline | `path1_baseline_run1.csv` |
+| Path 2 baseline | `path2_baseline_run1.csv` |
+| Cartesian lift, 0.7 m/s | `path3_vertical_lift_v0.7_run1.csv` |
+
+The link masses, inertia tensors, and joint origins the model is built
+from come from the resolved URDF rather than being hand-copied out of
+`ur_description`'s own config files — see
+`src/validation/reference/` for why, and for unmodified copies of those
+config files if you want to check the comparison yourself.
+
 ## Obstacle-aware perception and planning
 
 To move beyond optimizing a fixed, known trajectory, this part of the
@@ -84,12 +113,27 @@ src/
 │   pso_optimizer.py, qpso_optimizer.py   Four optimizers, identically structured
 ├── energy_objective.py                   Shared objective function and AHP weights
 ├── baseline_trajectory.py                Non-optimized reference trajectory
-└── obstacle_avoidance/
-    ├── scan_obstacles_from_cameras.py    Camera-based obstacle detection
-    ├── add_obstacles_to_planning_scene.py Registers known obstacles for planning
-    ├── plan_obstacle_avoiding_path.py    Obstacle-aware planning and execution
-    ├── obstacle_avoidance_pipeline.py    End-to-end detect → plan → execute
-    └── find_scan_pose.py                 Utility: finds a camera pose for scanning
+├── obstacle_avoidance/
+│   ├── scan_obstacles_from_cameras.py    Camera-based obstacle detection
+│   ├── add_obstacles_to_planning_scene.py Registers known obstacles for planning
+│   ├── plan_obstacle_avoiding_path.py    Obstacle-aware planning and execution
+│   ├── obstacle_avoidance_pipeline.py    End-to-end detect → plan → execute
+│   └── find_scan_pose.py                 Utility: finds a camera pose for scanning
+└── validation/
+    ├── validate_dynamics_rnea.py         Independent Newton-Euler (RNEA) dynamics
+    │                                      check against Gazebo/DART's own logged
+    │                                      joint effort, per-joint and overall RMS
+    │                                      error, across baseline trajectories
+    ├── replay_best_cmaes.py,             Re-executes each optimizer's stored best
+    │   replay_best_gwo.py,               parameter vector with no search loop, to
+    │   replay_best_pso.py                isolate simulation execution noise from
+    │                                     search-to-search variability
+    ├── logs/                            The three trajectory logs used by
+    │                                     validate_dynamics_rnea.py (see Dynamics
+    │                                     validation below)
+    └── reference/                       Unmodified UR10 config files from
+                                          ur_description, kept for comparison
+                                          against (BSD-3-Clause, see its README)
 
 results/                                  Per-evaluation result pages (see below)
 ```
