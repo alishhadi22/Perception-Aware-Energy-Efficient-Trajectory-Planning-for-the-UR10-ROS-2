@@ -185,6 +185,12 @@ weight); GWO, PSO, and QPSO report swarm-level average velocity and
 compression instead, since that is the granularity their logged data
 provides.
 
+The duration shown on these pages is the *commanded* segment time
+(`BASELINE_DURATION` x mean `compress`); the report's per-term tables
+(Sections 15.3-15.4) instead report the *logged execution span*, which
+includes controller settling and is typically 0.05-0.10 s longer for
+the same evaluation.
+
 ## Requirements
 
 - ROS 2 Jazzy

@@ -17,7 +17,8 @@ W_R = 0.0786   # Risk (obstacle proximity, perception-aware)
 
 # ─── NORMALIZATION REFERENCES ────────────────────────────────────────────────
 E_ref = 130.0    # Reference energy (J) — max expected
-T_ref = 8.042    # Reference time (s) — will be updated after baseline measurement
+T_ref = 8.090    # Reference time (s) = Path 1 commanded baseline duration (Section 9.2).
+                 # All callers pass t_ref explicitly; this default exists only as a fallback.
 S_ref = 16000000000.0  # Reference smoothness (jerk integral)
 R_ref = 6.67    # Reference risk = 1 / MIN_RANGE_M (0.15 m) -- worst-case sensor-limit risk
 
