@@ -161,7 +161,7 @@
   const DATA = JSON.parse(document.getElementById('data-json').textContent);
   const RUN_KEYS = ['run1', 'run2', 'run3'];
   const RUN_LABELS = { run1: 'Run 1', run2: 'Run 2', run3: 'Run 3' };
-  const RUN_IMPROVEMENT = { run1: 14.95, run2: 13.99, run3: 14.23 };
+  const RUN_IMPROVEMENT = { run1: 14.96, run2: 14.00, run3: 14.24 };
 
   function bestEval(evals) { return evals.reduce((a, b) => (b.J < a.J ? b : a), evals[0]); }
   function fmt(n, d) { return Number(n).toFixed(d); }

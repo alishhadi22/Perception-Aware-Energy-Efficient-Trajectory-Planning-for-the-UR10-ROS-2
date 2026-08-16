@@ -355,8 +355,8 @@
   const DATA = JSON.parse(document.getElementById('data-json').textContent);
   const RUN_KEYS = ['run1', 'run2', 'run3'];
   const RUN_LABELS = { run1: 'Run 1', run2: 'Run 2', run3: 'Run 3' };
-  const RUN_IMPROVEMENT = { run1: 17.34, run2: 17.38, run3: 16.89 };
-  const BASELINE_J = 0.770740;
+  const RUN_IMPROVEMENT = { run1: 17.35, run2: 17.39, run3: 16.90 };
+  const BASELINE_J = 0.770853;
 
   function bestEval(evals) {
     return evals.reduce((a, b) => (b.J < a.J ? b : a), evals[0]);

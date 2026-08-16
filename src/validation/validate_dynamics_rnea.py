@@ -326,6 +326,170 @@ def rms(x):
     return float(np.sqrt(np.mean(np.square(x))))
 
 
+def forward_kinematics_world(q):
+    """World-frame rotation and origin position of each link, for the
+    energy-conservation cross-check below. Independent of rnea()'s own
+    recursion (forward kinematics only, no dynamics), though it shares
+    the same _R_ORIGIN/_P_ORIGIN link-origin parameters."""
+    R = np.eye(3)
+    p = np.zeros(3)
+    out = []
+    for i in range(6):
+        Rz_qi = rpy_to_matrix(0.0, 0.0, q[i])
+        R_local = _R_ORIGIN[i] @ Rz_qi
+        p = p + R @ _P_ORIGIN[i]
+        R = R @ R_local
+        out.append((R.copy(), p.copy()))
+    return out
+
+
+def body_velocities(q, qdot):
+    """Angular/linear velocity of each link origin via an outward
+    kinematic recursion (velocity propagation only, no forces/torques --
+    a different computation from rnea()'s outward pass even though the
+    recursion structure looks similar)."""
+    omega = np.zeros(3)
+    v = np.zeros(3)
+    omegas, vs = [], []
+    for i in range(6):
+        Rz_qi = rpy_to_matrix(0.0, 0.0, q[i])
+        R_iminus1_i = _R_ORIGIN[i] @ Rz_qi
+        R_i_iminus1 = R_iminus1_i.T
+        omega_prev_in_i = R_i_iminus1 @ omega
+        omega_i = omega_prev_in_i + qdot[i] * Z_AXIS
+        p_i = _P_ORIGIN[i]
+        v_i = R_i_iminus1 @ (v + np.cross(omega, p_i))
+        omegas.append(omega_i)
+        vs.append(v_i)
+        omega, v = omega_i, v_i
+    return omegas, vs
+
+
+def system_energy(q, qdot, gravity=GRAVITY):
+    """Total kinetic + potential energy of the 6-link chain at one
+    instant, via forward kinematics + rigid-body KE/PE -- NOT via RNEA.
+    This is the "independent" side of the energy-conservation check:
+    it shares the same rigid-body model (masses, inertias, kinematic
+    chain) and the same input trajectory (q, qdot) as rnea(), but not
+    the Newton-Euler recursion itself. See energy_conservation_check()'s
+    docstring for what this independence does and does not establish."""
+    fk = forward_kinematics_world(q)
+    omegas, vs = body_velocities(q, qdot)
+    KE = 0.0
+    PE = 0.0
+    for i in range(6):
+        R_i, p_i = fk[i]
+        com_world = p_i + R_i @ _COM[i]
+        v_ci = vs[i] + np.cross(omegas[i], _COM[i])
+        KE += 0.5 * _MASS[i] * (v_ci @ v_ci) + 0.5 * omegas[i] @ (_I_COM_LINK_FRAME[i] @ omegas[i])
+        PE += _MASS[i] * gravity * com_world[2]
+    return KE, PE
+
+
+def energy_conservation_check(filepath, trim=5, apply_saturation_mask=False, gravity=GRAVITY):
+    """
+    Section 16.3.6's "Independent Cross-Check: Energy Conservation".
+
+    SCOPE, stated precisely (audited 2026-08-15, see report Section
+    16.3.6): P_rnea(t) = sum_i tau_i(t)*qdot_i(t) (tau from rnea()) and
+    E(t) = KE(t)+PE(t) (from system_energy(), forward kinematics) are
+    BOTH computed from the same logged q(t), qdot(t) and the same
+    rigid-body model. This check therefore tests whether the RNEA
+    implementation and the KE/PE formulation are mutually consistent
+    (a code-correctness signal -- a bug in either would show up as a
+    large residual), NOT whether either agrees with Gazebo/DART or
+    physical reality. Agreement with Gazebo is the separate, unaffected
+    check in Section 16.3.3 (RMS error against logged effort).
+
+    Reports BOTH forms side by side, per the original specification:
+      - pointwise: RMS(P_rnea - dE/dt) / RMS(P_rnea) * 100, dE/dt a
+        central-difference derivative of E(t) -- the ORIGINAL check,
+        sensitive to differentiation noise on both sides.
+      - integrated: |integral(P_rnea dt) - (E[end]-E[start])| /
+        |E[end]-E[start]| * 100 -- integration suppresses
+        differentiation noise (trapezoidal integral of P_rnea vs. an
+        algebraic energy difference needing no differentiation at all
+        on the right side).
+
+    The integrated form was adapted from a pre-existing standalone
+    script (scripts/analysis/energy_conservation_integrated.py, dated
+    2026-08-11, of unknown session origin -- not written in this
+    session). Audited before use (data flow, sign convention,
+    saturation rule, trim, 9-run consistency) and folded in here per
+    the original specification, which asked for this check to live in
+    this file with both residuals printed together, not as a separate
+    orphan script reporting only one of the two forms.
+
+    apply_saturation_mask: same rule as validate()'s Gazebo comparison
+    (Section 16.3.4) -- any timestep where any joint's logged effort
+    sits within SATURATION_MARGIN of its MAX_EFFORT excludes that
+    timestep from BOTH residuals, for every joint, not just the
+    saturated one.
+    """
+    data = load_csv(filepath)
+    t, q, qdot, effort = extract_arrays(data)
+    qddot = central_diff_accel(t, qdot)
+    n = len(t)
+
+    tau = np.zeros((n, 6))
+    E = np.zeros(n)
+    for i in range(n):
+        tau[i] = rnea(q[i], qdot[i], qddot[i], gravity=gravity)
+        KE, PE = system_energy(q[i], qdot[i], gravity=gravity)
+        E[i] = KE + PE
+
+    P = np.sum(tau * qdot, axis=1)  # SIGNED power, not |tau*qdot| -- energy
+                                     # conservation requires the signed form,
+                                     # distinct from Section 7.7's rectified E term
+    dEdt = central_diff_accel(t, E.reshape(-1, 1)).flatten()
+
+    lo, hi = trim, n - trim
+    mask = np.ones(hi - lo, dtype=bool)
+    n_excluded = 0
+    if apply_saturation_mask:
+        eff_window = effort[lo:hi]
+        sat = np.zeros_like(eff_window, dtype=bool)
+        for j in range(6):
+            sat[:, j] = np.abs(eff_window[:, j]) >= (MAX_EFFORT[j] - SATURATION_MARGIN)
+        mask = ~sat.any(axis=1)
+        n_excluded = int((~mask).sum())
+
+    t_w = t[lo:hi][mask]
+    P_w = P[lo:hi][mask]
+    dEdt_w = dEdt[lo:hi][mask]
+    E_w = E[lo:hi][mask]
+
+    pointwise_pct = rms(P_w - dEdt_w) / rms(P_w) * 100.0
+
+    integral_work = np.trapz(P_w, t_w)
+    delta_E = E_w[-1] - E_w[0]
+    integral_pct = abs(integral_work - delta_E) / max(abs(delta_E), 1e-9) * 100.0
+
+    return {
+        'file': os.path.basename(filepath),
+        'n_excluded': n_excluded,
+        'pointwise_residual_pct': pointwise_pct,
+        'integral_work_J': integral_work,
+        'delta_E_J': delta_E,
+        'integral_residual_pct': integral_pct,
+    }
+
+
+def print_energy_conservation_table(runs):
+    """runs: list of (label, filepath, apply_saturation_mask). Prints the
+    pointwise and integral residuals side by side, per trajectory/run."""
+    print("=" * 92)
+    print("  ENERGY-CONSERVATION CROSS-CHECK: POINTWISE vs. INTEGRATED FORM")
+    print("=" * 92)
+    print(f"  {'Trajectory':<20}{'Pointwise %':>13}{'Integral work (J)':>20}{'Delta E (J)':>14}{'Integral %':>13}   excluded")
+    for label, filepath, sat in runs:
+        r = energy_conservation_check(filepath, apply_saturation_mask=sat)
+        excl = f"{r['n_excluded']} samples" if sat else "n/a"
+        print(f"  {label:<20}{r['pointwise_residual_pct']:>12.2f}%{r['integral_work_J']:>20.4f}"
+              f"{r['delta_E_J']:>14.4f}{r['integral_residual_pct']:>12.2f}%   {excl}")
+    print("=" * 92)
+
+
 def validate(filepath, gravity=GRAVITY, trim=5, out_csv=None, accel_method='central'):
     """
     trim: number of samples dropped from each end of the trajectory before

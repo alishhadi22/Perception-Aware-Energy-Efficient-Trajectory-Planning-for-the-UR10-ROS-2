@@ -173,7 +173,7 @@
   const DATA = JSON.parse(document.getElementById('data-json').textContent);
   const RUN_KEYS = ['run1', 'run2', 'run3'];
   const RUN_LABELS = { run1: 'Run 1', run2: 'Run 2', run3: 'Run 3' };
-  const RUN_IMPROVEMENT = { run1: 12.77, run2: 16.20, run3: 16.19 };
+  const RUN_IMPROVEMENT = { run1: 12.78, run2: 16.21, run3: 16.20 };
   const RUN_OUTLIER = { run1: true, run2: false, run3: false };
 
   function bestEval(evals) { return evals.reduce((a, b) => (b.J < a.J ? b : a), evals[0]); }

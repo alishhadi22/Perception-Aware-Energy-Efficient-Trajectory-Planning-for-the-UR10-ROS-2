@@ -1,10 +1,12 @@
-# Perception-Aware, Energy-Efficient Trajectory Planning for the UR10 Cobot
+# Multi-Criteria Trajectory Optimization of the UR10 in ROS 2: A Comparative Metaheuristic Study
 
-A Final Year Project at the Lebanese University, investigating how
-metaheuristic optimization can reduce the energy consumption of a UR10
-collaborative robot's trajectories, and how camera-based obstacle
-perception can be integrated into the motion planning process. The full
-system is simulated in ROS 2 Jazzy with Gazebo Harmonic and MoveIt 2.
+A Final Year Project at the Lebanese University, comparing four
+population-based metaheuristics (CMA-ES, GWO, PSO, QPSO) on a
+multi-criteria trajectory optimization objective for a UR10
+collaborative robot -- energy, time, smoothness, and obstacle-proximity
+risk, combined via AHP-derived weights -- and integrating camera-based
+obstacle perception into the motion planning process. The full system
+is simulated in ROS 2 Jazzy with Gazebo Harmonic and MoveIt 2.
 
 ## Overview
 
@@ -100,20 +102,41 @@ project adds a perception layer:
 - **Combined pipeline** – detection, registration, planning, and execution
   are chained into a single script that runs the entire process end to end.
 
-This component is still under active development; obstacle padding and
-safety-margin tuning is the current focus. See the project's internal
-`CLAUDE.md` notes for the detailed debugging history if you're continuing
-this work.
+The combined scan → detect → plan → execute pipeline
+(`obstacle_avoidance_pipeline.py`) has been verified end to end: both
+obstacles detected to sub-millimetre accuracy, registered with MoveIt,
+and a collision-free path planned and executed successfully on the
+first attempt after a detection-padding fix.
 
 ## Repository structure
 
 ```
+package.xml                               ROS 2 package manifest
+launch/
+├── ur10_perception.launch.py             This project's own top-level launch file
+├── ur_sim_control.launch.py              Modified from Universal_Robots_ROS2_GZ_Simulation
+└── ur_sim_moveit.launch.py               Modified from Universal_Robots_ROS2_GZ_Simulation
+worlds/ur10_sensors.sdf                   Gazebo world: 100 Hz physics profile, the
+                                           two static obstacles (see PACKAGE_ASSETS_
+                                           PROVENANCE.md)
+config/ur_controllers.yaml                Controller config: 100 Hz update rate
+urdf/ur_gz.urdf.xacro                     Robot description, incl. the stereo
+                                           depth-camera pair on wrist_3_link
+                                           (worlds/, config/, urdf/, and the two
+                                           modified launch files above are BSD-3-
+                                           Clause, see PACKAGE_ASSETS_PROVENANCE.md)
+
 src/
 ├── cmaes_optimizer.py, gwo_optimizer.py,
 │   pso_optimizer.py, qpso_optimizer.py   Four optimizers, identically structured
 ├── energy_objective.py                   Shared objective function and AHP weights
 ├── baseline_trajectory.py                Non-optimized reference trajectory
+├── run_trivial_control.py                No-search control: one fixed parameter
+│                                           vector, isolates how much of an
+│                                           optimizer's gain needs search at all
 ├── obstacle_avoidance/
+│   ├── perception_node.py                Self-filter for the (currently unused)
+│   │                                       external-camera setup
 │   ├── scan_obstacles_from_cameras.py    Camera-based obstacle detection
 │   ├── add_obstacles_to_planning_scene.py Registers known obstacles for planning
 │   ├── plan_obstacle_avoiding_path.py    Obstacle-aware planning and execution
@@ -123,11 +146,15 @@ src/
     ├── validate_dynamics_rnea.py         Independent Newton-Euler (RNEA) dynamics
     │                                      check against Gazebo/DART's own logged
     │                                      joint effort, per-joint and overall RMS
-    │                                      error, across baseline trajectories
+    │                                      error, across baseline trajectories, plus
+    │                                      the energy-conservation cross-check
     ├── replay_best_cmaes.py,             Re-executes each optimizer's stored best
     │   replay_best_gwo.py,               parameter vector with no search loop, to
-    │   replay_best_pso.py                isolate simulation execution noise from
-    │                                     search-to-search variability
+    │   replay_best_pso.py,               isolate simulation execution noise from
+    │   replay_best_qpso.py               search-to-search variability
+    ├── best_params/                      The persisted best-parameter vectors the
+    │                                      four replay scripts above read (see its
+    │                                      own README for per-algorithm provenance)
     ├── logs/                            The three trajectory logs used by
     │                                     validate_dynamics_rnea.py (see Dynamics
     │                                     validation below)
